@@ -164,7 +164,7 @@ export default defineComponent({
         label: "1 (D do)高音",
         nlabel:"1",
         elabel:"D",
-        value: 18
+        value: 8
       },
       {
         label: "2 (E re)高音",

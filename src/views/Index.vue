@@ -25,12 +25,11 @@
 <script  lang="ts">
 
 import {defineComponent,ref} from "vue";
-import HelloWorld from "../components/HelloWorld.vue";
 import Flute from "../components/Flute.vue";
 export default defineComponent({
  name: "index",
   components: {
-    HelloWorld,
+
     Flute
   },
   setup(context) {
