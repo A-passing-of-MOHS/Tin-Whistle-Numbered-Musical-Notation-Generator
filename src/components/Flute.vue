@@ -57,7 +57,11 @@
           </div>
           <div class="flute">
             <div class="top"></div>
-            <div v-for="item in fluteData" class="hole" :style="{background:item==1?'black':''}"></div>
+            <div class="holeList">
+              <div class="line"></div>
+              <div v-for="item in fluteData" class="hole" :style="{background:item==1?'black':''  }"></div>
+            </div>
+
 
           </div>
         </div>
@@ -384,13 +388,27 @@ export default defineComponent({
     width: 15px;
     height: 20px;
   }
-
-  .hole {
-    width: 20px;
-    height: 20px;
-    border-radius: 20px;
-    background: white;
+  .holeList{
+    height: 260px;
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+    justify-content: space-around;
+    .line{
+      height: 2px;
+      width: 100%;
+      background: #f01440;
+      position: relative;
+      top:130px
+    }
+    .hole {
+      width: 20px;
+      height: 20px;
+      border-radius: 20px;
+      background: white;
+    }
   }
+
 }
 
 
