@@ -1,7 +1,7 @@
 <template>
   <div class="flute-box" >
-    {{index}}
-    {{ flag }}
+<!--    {{index}}-->
+<!--    {{ flag }}-->
     <el-popover
         v-if="isShow"
         placement="right"
@@ -39,19 +39,19 @@
       <template #reference>
         <div>
           <div class="popoverBtn" >
-            <div  v-if="selectScale.value==15" style="display: flex">
+            <div  v-if="selectScale.value>20" style="display: flex">
                <div class="highLabel"></div>
                <div class="highLabel"></div>
             </div >
-            <div class="highLabel" v-if="selectScale.value>7&&selectScale.value!=15"></div >
+            <div class="highLabel" v-if="selectScale.value>10&&selectScale.value<20"></div >
             <div class="highLabelHide" v-if="selectScale.value<=7"></div >
             <div class="scaleLabel">{{selectScale.nlabel }}</div>
 
-            <div  v-if="selectScale.value==15" style="display: flex">
+            <div  v-if="selectScale.value>20" style="display: flex">
               <div class="highLabel"></div>
               <div class="highLabel"></div>
             </div >
-            <div class="highLabel" v-if="selectScale.value>7&&selectScale.value!=15"></div >
+            <div class="highLabel" v-if="selectScale.value>10&&selectScale.value<20"></div >
             <div class="highLabelHide" v-if="selectScale.value<=7"></div >
             <div class="scaleLabel">{{ selectScale.elabel }}</div>
           </div>
@@ -61,9 +61,8 @@
               <div class="line"></div>
               <div v-for="item in fluteData" class="hole" :style="{background:item==1?'black':''  }"></div>
             </div>
-
-
           </div>
+
         </div>
 
 
@@ -71,7 +70,9 @@
 
     </el-popover>
 
+    <div class="fluteLabel" v-if="selectScale.value>10&&selectScale.value<20">+</div>
 
+    <div class="fluteLabel" v-if="selectScale.value>20">++</div>
 
 
   </div>
@@ -81,6 +82,7 @@
 <script lang="ts">
 
 import {defineComponent, ref,onMounted,watch} from "vue";
+import {DrumOption} from "./DrumOption";
 
 export default defineComponent({
   name: "Flute",
@@ -122,98 +124,7 @@ export default defineComponent({
 
     //D调 D  E  F  G  A  B  C
     //   do re mi fa so la si
-    const Drum1Options = [
-      {
-        label: "1 (D do) ",
-        nlabel:"1",
-        elabel:"D",
-        value: 1
-      },
-      {
-        label: "2 (E re) ",
-        nlabel:"2",
-        elabel:"E",
-        value: 2
-      },
-      {
-        label: "3 (F mi)",
-        nlabel:"3",
-        elabel:"F",
-        value: 3
-      },
-      {
-        label: "4 (G fa)",
-        nlabel:"4",
-        elabel:"G",
-        value: 4
-      },
-      {
-        label: "5 (A so)",
-        nlabel:"5",
-        elabel:"A",
-        value: 5
-      },
-      {
-        label: "6 (B la)",
-        nlabel:"6",
-        elabel:"B",
-        value: 6
-      }, {
-        label: "7 (C si)",
-        nlabel:"7",
-        elabel:"C",
-        value: 7
-      },
-      {
-        label: "1 (D do)高音",
-        nlabel:"1",
-        elabel:"D",
-        value: 8
-      },
-      {
-        label: "2 (E re)高音",
-        nlabel:"2",
-        elabel:"E",
-        value: 9
-      },
-      {
-        label: "3 (F mi)高音",
-        nlabel:"3",
-        elabel:"F",
-        value: 10
-      },
-      {
-        label: "4 (G fa)高音",
-        nlabel:"4",
-        elabel:"G",
-        value: 11
-      },
-      {
-        label: "5 (A so)高音",
-        nlabel:"5",
-        elabel:"A",
-        value: 12
-      },
-      {
-        label: "6 (B la)高音",
-        nlabel:"6",
-        elabel:"B",
-        value: 13
-      }, {
-        label: "7(C si)高音",
-        nlabel:"7",
-        elabel:"C",
-        value: 14
-      },
-      {
-        label: "1(D si)倍高音",
-        nlabel:"1",
-        elabel:"D",
-        value: 15
-      },
-
-
-    ]
+    const Drum1Options = DrumOption.options1
     const fluteData = ref([
       0,0,0,0,0,0
     ])
@@ -254,28 +165,28 @@ export default defineComponent({
        case 7:
          list=[ 0,0,0,0,0,0]
          break
-       case 8:
+       case 11:
          list=[ 0,1,1,1,1,1]
          break
-       case 9:
+       case 12:
          list=[ 1,1,1,1,1,0]
          break
-       case 10:
+       case 13:
          list=[ 1,1,1,1,0,0]
          break
-       case 11:
+       case 14:
          list=[ 1,1,1,0,0,0]
          break
-       case 12:
+       case 15:
          list=[ 1,1,0,0,0,0]
          break
-       case 13:
+       case 16:
          list=[ 1,0,0,0,0,0]
          break
-       case 14:
+       case 17:
          list=[ 0,0,0,0,0,0]
          break
-       case 15:
+       case 21:
          list=[ 0,1,1,1,1,1]
          break
        default:
@@ -335,10 +246,11 @@ export default defineComponent({
 <style lang="less">
 .flute-box {
   width: 80px;
-  height: 425px;
+  height: 440px;
   display: flex;
   align-items: center;
   flex-direction: column;
+  margin-bottom: 15px;
   .popoverBtn{
     height: 125px;
     display: flex;
@@ -362,7 +274,7 @@ export default defineComponent({
     }
 
     .scaleLabel{
-      font-size: 36px;
+      font-size: 32px;
 
     }
   }
@@ -370,6 +282,9 @@ export default defineComponent({
 
 
 
+}
+.fluteLabel{
+  font-size: 36px;
 }
 .flute {
   width: 28px;

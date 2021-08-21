@@ -25,7 +25,7 @@
 <script  lang="ts">
 
 import {defineComponent,ref} from "vue";
-import Flute from "../components/Flute.vue";
+import Flute from "../components/Flute/Flute.vue";
 export default defineComponent({
  name: "index",
   components: {
