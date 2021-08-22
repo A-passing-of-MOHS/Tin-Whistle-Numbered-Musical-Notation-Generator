@@ -15,7 +15,10 @@
         <el-button type="primary" style="margin-bottom: 10px;" @click="add('scale')">添加音阶</el-button>
       </el-row>
       <el-row>
-        <el-button  @click="add('space')">添加留白</el-button>
+        <el-button  @click="add('space')" style="margin-bottom: 10px;">添加留白</el-button>
+      </el-row>
+      <el-row>
+        <el-button  @click="save"  style="width: 98px;">保  存</el-button>
       </el-row>
     </div>
   </div>
@@ -23,27 +26,36 @@
 </template>
 
 <script  lang="ts">
-
-import {defineComponent,ref} from "vue";
+import { ElMessage } from 'element-plus'
+import {defineComponent, onMounted, ref} from "vue";
 import Flute from "../components/Flute/Flute.vue";
 export default defineComponent({
  name: "index",
   components: {
-
     Flute
   },
   setup(context) {
-   const fluteList =ref([
-     {
-       value: 1
-     },
-     {
 
-       value: 1
-     },
-     {
-       value: 1
-     },])
+   const fluteList =ref([])
+    onMounted(()=>{
+     let index_musicNameStr = localStorage.getItem("index_musicName")
+      console.log(index_musicNameStr)
+      if(index_musicNameStr){
+        fluteList.value=JSON.parse(index_musicNameStr)
+      }else {
+        fluteList.value= [
+          {
+            value: 1
+          },
+          {
+
+            value: 1
+          },
+          {
+            value: 1
+          }]
+      }
+    })
    const add =(type :string)=>{
      let obj ={
        value:1
@@ -79,12 +91,23 @@ export default defineComponent({
       console.log( fluteList.value)
     }
 
+    const save =()=>{
+      let musicName ="index_musicName"
+      localStorage.setItem(musicName,JSON.stringify(fluteList.value))
+      ElMessage.success({
+        message: '保存成功',
+        type: 'success'
+      });
+
+    }
+
     return{
       fluteList,
       add,
       deleteItem,
       addItem,
       scaleChange,
+      save
 
     }
   }
