@@ -1,4 +1,44 @@
 <template>
+  <div class="top-bar">
+
+    <div class="setupIcon">
+      <el-dropdown trigger="click" >
+      <span class="el-dropdown-link">
+        设置<i class="el-icon-arrow-down el-icon--right"></i>
+      </span>
+        <template #dropdown>
+          <el-dropdown-menu>
+            <el-dropdown-item>
+               <div>
+                 <el-switch v-model="isShowFlute" active-color="#13ce66" inactive-color="#ff4949">
+                 </el-switch>
+                <span class="setupTit">隐藏笛子</span>
+               </div>
+            </el-dropdown-item>
+            <el-dropdown-item>
+              <div>
+                <el-switch v-model="isShowNumber" active-color="#13ce66" inactive-color="#ff4949">
+                </el-switch>
+                <span class="setupTit">显示数字</span>
+              </div>
+            </el-dropdown-item>
+            <el-dropdown-item>
+              <div>
+                <el-switch v-model="isShowLetter" active-color="#13ce66" inactive-color="#ff4949">
+                </el-switch>
+                <span class="setupTit">显示字母</span>
+              </div>
+            </el-dropdown-item>
+
+
+          </el-dropdown-menu>
+        </template>
+      </el-dropdown>
+    </div>
+
+
+
+  </div>
   <div class="fluteList-box">
     <Flute v-for="(item,index) in fluteList"
            :isShow="!item.space"
@@ -6,6 +46,9 @@
            :key="index"
            :flag="item.flag"
            :value="item"
+           :isShowFlute="isShowFlute"
+           :isShowNumber="isShowNumber"
+           :isShowLetter="isShowLetter"
            @deleteItem="deleteItem"
            @addItem="addItem"
            @change="scaleChange"
@@ -100,9 +143,15 @@ export default defineComponent({
       });
 
     }
+    const isShowFlute=ref(true)
+    const isShowNumber=ref(true)
+    const isShowLetter=ref(true)
 
     return{
       fluteList,
+      isShowFlute,
+      isShowNumber,
+      isShowLetter,
       add,
       deleteItem,
       addItem,
@@ -119,6 +168,18 @@ export default defineComponent({
 </script>
 
 <style rel="stylesheet/scss" lang="scss" >
+.top-bar{
+  height: 40px;
+  width: 100%;
+  display: flex;
+  .setupIcon{
+    margin-left: auto;
+
+  }
+}
+.setupTit{
+  margin-left: 5px;
+}
 .fluteList-box{
   padding: 20px;
 
