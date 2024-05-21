@@ -167,7 +167,7 @@ export default defineComponent({
 
 </script>
 
-<style rel="stylesheet/scss" lang="scss" >
+<style  lang="less" scoped >
 .top-bar{
   height: 40px;
   width: 100%;

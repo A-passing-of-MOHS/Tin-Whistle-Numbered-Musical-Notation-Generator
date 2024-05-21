@@ -27,7 +27,7 @@ export default defineComponent({
 });
 </script>
 
-<style rel="stylesheet/scss" lang="scss" scoped>
+<style  lang="less" scoped>
 .wscn-http404 {
   position: relative;
   width: 1200px;
