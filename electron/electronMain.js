@@ -11,7 +11,15 @@ const createWindow = () => {
         height: 600,
     })
     // 加载当前vue 的地址
-    win.loadURL('http://localhost:5173')
+   // win.loadURL('http://localhost:5173')
+    // 加载当前vue 的地址
+    // win.loadURL('http://localhost:5173')
+
+    // 加载打包之后的页面内容
+    //******主要就是这里，加载的文件内容改变了******
+    // 因为 vue 打包之后的内容，我们输出到了 electron/pages 目录下
+    win.loadFile(path.resolve(__dirname,'pages/index.html'))
+
 
 }
 

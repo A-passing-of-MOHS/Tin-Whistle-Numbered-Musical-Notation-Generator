@@ -1,22 +1,38 @@
 {
-  "main":"electron/electronMain.js",
+  "main": "electron/electronMain.js",
   "name": "vite-project",
+  "author": "ffzb",
+  "description": "The Project of Electron + Vue3 + Electron Forge",
   "private": true,
   "version": "0.0.0",
-  "type": "module",
+  "type": "commonjs",
   "scripts": {
     "dev": "vite",
-    "dev:electron":"electron .",
-    "build": "vue-tsc && vite build",
-    "preview": "vite preview"
+    "dev:electron": "electron .",
+    "build": "run-p type-check \"build-only {@}\" --",
+    "build-only": "vite build",
+    "preview": "vite preview",
+    "start": "electron-forge start",
+    "package": "electron-forge package",
+    "make": "electron-forge make"
   },
   "dependencies": {
+    "electron-squirrel-startup": "^1.0.1",
     "element-plus": "^2.7.3",
     "vue": "^3.4.21",
     "vue-router": "^4.3.2"
   },
   "devDependencies": {
+    "@electron-forge/cli": "^7.4.0",
+    "@electron-forge/maker-deb": "^7.4.0",
+    "@electron-forge/maker-rpm": "^7.4.0",
+    "@electron-forge/maker-squirrel": "^7.4.0",
+    "@electron-forge/maker-zip": "^7.4.0",
+    "@electron-forge/plugin-auto-unpack-natives": "^7.4.0",
+    "@electron-forge/plugin-fuses": "^7.4.0",
+    "@electron/fuses": "^1.8.0",
     "@vitejs/plugin-vue": "^5.0.4",
+    "babel-eslint": "^10.1.0",
     "electron": "^30.0.6",
     "less": "^4.2.0",
     "less-loader": "^7.3.0",
