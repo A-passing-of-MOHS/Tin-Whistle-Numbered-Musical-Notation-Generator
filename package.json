@@ -1,6 +1,6 @@
 {
   "main": "electron/electronMain.js",
-  "name": "vite-project",
+  "name": "zftscq",
   "author": "ffzb",
   "description": "The Project of Electron + Vue3 + Electron Forge",
   "private": true,

@@ -4,6 +4,7 @@
 // 导入模块
 const  { app, BrowserWindow  } = require( 'electron')
 const {runCmd} = require( "./utils");
+const path = require('path')
 
 
 // 是否是开发环境

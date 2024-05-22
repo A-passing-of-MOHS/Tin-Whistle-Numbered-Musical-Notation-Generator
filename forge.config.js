@@ -2,9 +2,15 @@ const { FusesPlugin } = require('@electron-forge/plugin-fuses');
 const { FuseV1Options, FuseVersion } = require('@electron/fuses');
 
 module.exports = {
-  packagerConfig: {
-    asar: true,
-  },
+  // packagerConfig: {
+  //   name: 'APP_NAME',
+  //   // 不加扩展名，MAC 会自动查找 .icns、WIN 使用 .ico
+  //   icon: './icon/icon',
+  //   // 最终包不使用的代码，不要打入 asar
+  //   ignore: [/\.yarn/, /src\/render/],
+  //   appBundleId: `com.xxx.xxx`,
+  //   appCopyright: `Copyright © 2023 ${packageJson.author}`
+  // },
   rebuildConfig: {},
   makers: [
     // windows 上的打包
