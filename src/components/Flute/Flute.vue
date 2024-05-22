@@ -64,7 +64,7 @@
             <div class="top"></div>
             <div class="holeList">
               <div class="line"></div>
-              <div v-for="item in fluteData" class="hole" :style="{background:item==1?'black':''  }"></div>
+              <div v-for="(item,index) in fluteData" @click.stop="changeFluteItemData(index)" class="hole" :style="{background:item==1?'black':''  }"></div>
             </div>
           </div>
 
@@ -146,7 +146,7 @@ export default defineComponent({
     //   do re mi fa so la si
     const Drum1Options = DrumOption.options1
     const fluteData = ref([
-      0, 0, 0, 0, 0, 0
+      1, 1, 1, 1, 1, 1
     ])
     const selectScale = ref({
       label: "1 (D do) ",
@@ -161,6 +161,46 @@ export default defineComponent({
     watch(() => props.value, (newValue, oldValue) => {
       scaleChange(newValue)
     })
+    const changeFluteItemData = (index) => {
+      let item = fluteData.value[index]
+      if(item == 0){
+          let newArr =[]
+          for (let i = 0; i <=index; i++) {
+            newArr.push(1)
+          }
+          fluteData.value.splice(0,newArr.length,...newArr)
+
+
+      }else {
+        if (index>0){
+          let topItem = fluteData.value[index-1]
+
+          if(index == fluteData.value.length-1){
+            //松开最后一个
+            fluteData.value[index]=0
+            return;
+          }
+          let bottomItem = fluteData.value[index+1]
+
+          if( item!= bottomItem){
+            //松开下面最后一个
+            fluteData.value[index]=0
+            return
+          }
+
+          if(topItem == item){
+            return
+          }
+        }
+
+        fluteData.value[index]=0
+
+
+
+      }
+
+    }
+
     const scaleChange = (e) => {
       let list = [0, 0, 0, 0, 0, 0]
       switch (e.value) {
@@ -264,6 +304,7 @@ export default defineComponent({
       Drum1Options,
       scale,
       fluteData,
+      changeFluteItemData,
       selectScale,
       visible,
       scaleChange,

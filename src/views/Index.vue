@@ -70,7 +70,7 @@
 
 <script  lang="ts">
 import { ElMessage } from 'element-plus'
-import {defineComponent, onMounted, ref} from "vue";
+import {defineComponent, onMounted,onBeforeUnmount, ref} from "vue";
 import Flute from "../components/Flute/Flute.vue";
 export default defineComponent({
  name: "index",
@@ -78,7 +78,25 @@ export default defineComponent({
     Flute
   },
   setup(context) {
+   onMounted(()=>{
+     window.addEventListener('keydown',handleKeyDown);
+   })
+    onBeforeUnmount(()=>{
+          window.removeEventListener('keydown',handleKeyDown);
+        }
+    )
+    
+    const handleKeyDown = (event) => {
 
+      if (event.code === 'Enter') {
+        // 处理回车键按下事件
+        add('scale')
+      }
+      if (event.code === 'Space') {
+        // 处理空格按下事件
+        add('space')
+      }
+    }
    const fluteList =ref([])
     onMounted(()=>{
      let index_musicNameStr = localStorage.getItem("index_musicName")
@@ -100,7 +118,7 @@ export default defineComponent({
       }
     })
    const add =(type :string)=>{
-     let obj ={
+     let obj :any ={
        value:1
      }
      if(type=="scale"){
@@ -131,7 +149,6 @@ export default defineComponent({
     const scaleChange=(index,scale)=>{
       fluteList.value[index].value = scale
       fluteList.value=[...fluteList.value]
-      console.log( fluteList.value)
     }
 
     const save =()=>{
@@ -146,7 +163,7 @@ export default defineComponent({
     const isShowFlute=ref(true)
     const isShowNumber=ref(true)
     const isShowLetter=ref(true)
-
+   
     return{
       fluteList,
       isShowFlute,
