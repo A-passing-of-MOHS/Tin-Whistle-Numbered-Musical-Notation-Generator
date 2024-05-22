@@ -4,6 +4,10 @@
 // 导入模块
 const  { app, BrowserWindow  } = require( 'electron')
 const {runCmd} = require( "./utils");
+const { loadEnv } = require( 'vite')
+
+// 是否是开发环境
+const isDev = process.env.IS_DEV == "true" ? true : false;
 
 // 创建主窗口
 const createWindow = async () => {
@@ -14,13 +18,21 @@ const createWindow = async () => {
    //隐藏顶部菜单
    win.setMenu(null);
     // 加载当前vue 的地址
-   win.loadURL('http://localhost:5173')
-    win.webContents.openDevTools()
 
-    // 加载打包之后的页面内容
-    //******主要就是这里，加载的文件内容改变了******
-    // 因为 vue 打包之后的内容，我们输出到了 electron/pages 目录下
-    //win.loadFile(path.resolve(__dirname,'pages/index.html'))
+    if(isDev){
+        win.loadURL('http://localhost:5173')
+        win.webContents.openDevTools()
+    }else {
+        // 加载打包之后的页面内容
+        //******主要就是这里，加载的文件内容改变了******
+        // 因为 vue 打包之后的内容，我们输出到了 electron/pages 目录下
+        win.loadFile(path.resolve(__dirname,'pages/index.html'))
+
+    }
+
+
+
+
 
 
 }
@@ -28,7 +40,11 @@ const createWindow = async () => {
 // 应用准备就绪，加载窗口
 app.whenReady().then(() => {
     // 开发环境下启动 vue 服务
-    runCmd('vite')
+    if (isDev) {
+        runCmd('vite')
+    }
+
+
 
 
     createWindow()

@@ -8,7 +8,7 @@
   "type": "commonjs",
   "scripts": {
     "dev": "vite",
-    "dev:electron": "electron .",
+    "dev:electron": "cross-env IS_DEV=true electron .",
     "build": "run-p type-check \"build-only {@}\" --",
     "build-only": "vite build",
     "preview": "vite preview",
@@ -17,6 +17,7 @@
     "make": "electron-forge make"
   },
   "dependencies": {
+    "cross-env": "^7.0.3",
     "electron-squirrel-startup": "^1.0.1",
     "element-plus": "^2.7.3",
     "vue": "^3.4.21",
