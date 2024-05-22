@@ -4,7 +4,7 @@
 // 导入模块
 const  { app, BrowserWindow  } = require( 'electron')
 const {runCmd} = require( "./utils");
-const { loadEnv } = require( 'vite')
+
 
 // 是否是开发环境
 const isDev = process.env.IS_DEV == "true" ? true : false;
