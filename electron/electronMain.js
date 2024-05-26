@@ -2,7 +2,7 @@
  * electron 的主进程
  */
 // 导入模块
-const  { app, BrowserWindow  } = require( 'electron')
+const  { app, BrowserWindow ,ipcMain  } = require( 'electron')
 const {runCmd} = require( "./utils");
 const path = require('path')
 
@@ -15,8 +15,18 @@ const createWindow = async () => {
     const win = new BrowserWindow({
         width: 1920,
         height: 1080,
+        webPreferences: {
+            preload: path.join(__dirname, 'preload.js')
+        }
     })
-   //隐藏顶部菜单
+    //缩放监听
+    ipcMain.on('set-slider', (event, value) => {
+        console.log(value,"缩放值")
+        win.webContents.setZoomLevel(-value*0.1)
+    })
+
+
+    //隐藏顶部菜单
    win.setMenu(null);
     // 加载当前vue 的地址
     console.log(isDev,"isDev")

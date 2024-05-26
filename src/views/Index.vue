@@ -1,6 +1,8 @@
 <template>
   <div class="top-bar">
-
+    <div style="width: 100%">
+      <el-slider v-model="value"  @change="sliderChange" />
+    </div>
     <div class="setupIcon">
       <el-dropdown trigger="click" >
       <span class="el-dropdown-link">
@@ -163,13 +165,27 @@ export default defineComponent({
     const isShowFlute=ref(true)
     const isShowNumber=ref(true)
     const isShowLetter=ref(true)
-   
+
+    const value = ref(0)
+
+// 在渲染进程的脚本中
+
+
+
+    const sliderChange = (val)=>{
+      // 发送消息到主进程
+    window.electronAPI.setSlider(val)
+
+    }
+
     return{
+      value,
       fluteList,
       isShowFlute,
       isShowNumber,
       isShowLetter,
       add,
+      sliderChange,
       deleteItem,
       addItem,
       scaleChange,

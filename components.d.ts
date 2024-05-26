@@ -16,6 +16,7 @@ declare module 'vue' {
     ElPopover: typeof import('element-plus/es')['ElPopover']
     ElRow: typeof import('element-plus/es')['ElRow']
     ElSelect: typeof import('element-plus/es')['ElSelect']
+    ElSlider: typeof import('element-plus/es')['ElSlider']
     ElSwitch: typeof import('element-plus/es')['ElSwitch']
     Flute: typeof import('./src/components/Flute/Flute.vue')['default']
     HelloWorld: typeof import('./src/components/HelloWorld.vue')['default']

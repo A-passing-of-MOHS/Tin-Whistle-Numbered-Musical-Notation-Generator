@@ -429,55 +429,156 @@ export default defineComponent({
     }
   }
 
-
-}
-
-.fluteLabel {
-  font-size: 36px;
-}
-
-.flute {
-  margin-top: 12px;
-  width: 28px;
-  height: 280px;
-
-  border-radius: 5px;
-  background: #cddce5;
-  box-shadow: inset -13px -13px 26px #aab7be,
-  inset 13px 13px 26px #f0ffff;
-  display: flex;
-  align-items: center;
-  flex-direction: column;
-  justify-content: space-around;
-
-  .top {
-    width: 15px;
-    height: 20px;
+  .fluteLabel {
+    font-size: 36px;
   }
 
-  .holeList {
-    height: 260px;
+  .flute {
+    margin-top: 12px;
+    width: 28px;
+    height: 280px;
+
+    border-radius: 5px;
+    background: #cddce5;
+    box-shadow: inset -13px -13px 26px #aab7be,
+    inset 13px 13px 26px #f0ffff;
     display: flex;
     align-items: center;
     flex-direction: column;
     justify-content: space-around;
 
-    .line {
-      height: 2px;
-      width: 100%;
-      background: #f01440;
-      position: relative;
-      top: 130px
+    .top {
+      width: 15px;
+      height: 20px;
     }
 
-    .hole {
-      width: 20px;
-      height: 20px;
-      border-radius: 20px;
-      background: white;
+    .holeList {
+      height: 260px;
+      display: flex;
+      align-items: center;
+      flex-direction: column;
+      justify-content: space-around;
+
+      .line {
+        height: 2px;
+        width: 100%;
+        background: #f01440;
+        position: relative;
+        top: 130px
+      }
+
+      .hole {
+        width: 20px;
+        height: 20px;
+        border-radius: 20px;
+        background: white;
+      }
+    }
+
+  }
+}
+
+.flute-box-small {
+  width: 80px;
+  display: flex;
+  align-items: center;
+  flex-direction: column;
+  margin-bottom: 15px;
+
+  .popoverBtn {
+
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+    justify-content: center;
+    .labelBox{
+      height: 58px;
+      display: flex;
+      align-items: center;
+      flex-direction: column;
+      justify-content: center;
+    }
+    .highLabel {
+      width: 12px;
+      height: 12px !important;
+      border-radius: 12px;
+      background: #000000;
+
+    }
+    .lowLabel {
+      width: 12px;
+      height: 12px !important;
+      border-radius: 12px;
+      background: #000000;
+
+    }
+
+    .highhightLabel {
+      font-size: 12px;
+      line-height: 12px;
+      margin-bottom: -5px;
+    }
+
+    .highLabelHide {
+      //height: 12px;
+
+    }
+
+    .scaleLabel {
+      font-size: 32px;
+      line-height: 32px;
+      margin-bottom: 2px;
+
     }
   }
 
+  .fluteLabel {
+    font-size: 36px;
+  }
+
+  .flute {
+    margin-top: 12px;
+    width: 28px;
+    height: 280px;
+
+    border-radius: 5px;
+    background: #cddce5;
+    box-shadow: inset -13px -13px 26px #aab7be,
+    inset 13px 13px 26px #f0ffff;
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+    justify-content: space-around;
+
+    .top {
+      width: 15px;
+      height: 20px;
+    }
+
+    .holeList {
+      height: 260px;
+      display: flex;
+      align-items: center;
+      flex-direction: column;
+      justify-content: space-around;
+
+      .line {
+        height: 2px;
+        width: 100%;
+        background: #f01440;
+        position: relative;
+        top: 130px
+      }
+
+      .hole {
+        width: 20px;
+        height: 20px;
+        border-radius: 20px;
+        background: white;
+      }
+    }
+
+  }
 }
 
 
