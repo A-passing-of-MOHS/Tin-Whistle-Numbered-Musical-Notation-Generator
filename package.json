@@ -2,7 +2,7 @@
   "main": "electron/electronMain.js",
   "name": "tin-whistle-numbered-musical-notation-generator",
   "author": "LeaveEarly",
-  "description": "",
+  "description": "tin-whistle-numbered-musical-notation-generator",
   "private": true,
   "version": "1.1.0",
   "type": "commonjs",
