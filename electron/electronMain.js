@@ -19,8 +19,13 @@ const createWindow = async () => {
    //隐藏顶部菜单
    win.setMenu(null);
     // 加载当前vue 的地址
-
+    console.log(isDev,"isDev")
     if(isDev){
+        // 开发环境下启动 vue 服务
+
+      // runCmd('vite')
+
+
         win.loadURL('http://localhost:5173')
         win.webContents.openDevTools()
     }else {
@@ -40,13 +45,6 @@ const createWindow = async () => {
 
 // 应用准备就绪，加载窗口
 app.whenReady().then(() => {
-    // 开发环境下启动 vue 服务
-    if (isDev) {
-        runCmd('vite')
-    }
-
-
-
 
     createWindow()
 

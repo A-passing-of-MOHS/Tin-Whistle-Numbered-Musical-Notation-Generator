@@ -18,6 +18,14 @@
             :value="item">
         </el-option>
       </el-select>
+      <el-select v-model="vocalPart" placeholder="请选择" @change="VocalPartChange" style="margin-bottom:10px">
+        <el-option
+            v-for="item in VocalPartOptions"
+            :key="item.value"
+            :label="item.label"
+            :value="item.value">
+        </el-option>
+      </el-select>
       <el-row>
         <el-col :span="12">
           <el-button type="primary" @click="addItem('scale',false)">右侧添加</el-button>
@@ -39,25 +47,29 @@
       <template #reference>
         <div>
           <div class="popoverBtn">
-            <div v-if="isShowNumber" style="height: 65px">
-              <div v-if="selectScale.value>20" style="display: flex">
+            <div v-if="isShowNumber" class="labelBox" >
+              <div v-if="vocalPart==3" style="display: flex">
                 <div class="highLabel"></div>
                 <div class="highLabel"></div>
               </div>
-              <div class="highLabel" v-if="selectScale.value>10&&selectScale.value<20"></div>
-              <div class="highLabelHide" v-if="selectScale.value<=7"></div>
+              <div class="highLabel" v-if="vocalPart==2"></div>
+              <div class="highLabelHide" v-if="vocalPart<2"></div>
               <div class="scaleLabel">{{ selectScale.nlabel }}</div>
+              <div class="lowLabel"  v-if="vocalPart==0"></div>
+              <div class="highLabelHide"  v-if="vocalPart!=0"></div>
             </div>
 
-            <div v-if="isShowLetter" style="height: 65px">
-            <div v-if="selectScale.value>20" style="display: flex">
+            <div v-if="isShowLetter"  class="labelBox" >
+            <div v-if="vocalPart==3" style="display: flex">
               <div class="highLabel"></div>
               <div class="highLabel"></div>
             </div>
 
-            <div class="highLabel" v-if="selectScale.value>10&&selectScale.value<20"></div>
-            <div class="highLabelHide" v-if="selectScale.value<=7"></div>
+            <div class="highLabel" v-if="vocalPart==2"></div>
+              <div class="highLabelHide" v-if="vocalPart<2"></div>
             <div class="scaleLabel">{{ selectScale.elabel }}</div>
+              <div class="lowLabel" v-if="vocalPart==0" ></div>
+              <div class="highLabelHide"  v-if="vocalPart!=0"></div>
             </div>
           </div>
           <div class="flute" v-if="isShowFlute">
@@ -76,10 +88,10 @@
     </el-popover>
     <div style="width: 100%;height: 100%" v-else @click="showMsg"></div>
 
+    <div class="fluteLabel" v-if="vocalPart==0">-</div>
+    <div class="fluteLabel" v-if="vocalPart==2">+</div>
 
-    <div class="fluteLabel" v-if="selectScale.value>10&&selectScale.value<20&&isShowFlute">+</div>
-
-    <div class="fluteLabel" v-if="selectScale.value>20&&isShowFlute">++</div>
+    <div class="fluteLabel" v-if="vocalPart==3">++</div>
 
 
   </div>
@@ -140,11 +152,13 @@ export default defineComponent({
   },
   setup(props, context) {
     const scale = ref(null)
+    const vocalPart = ref(1)
     const visible = ref(false)
 
     //D调 D  E  F  G  A  B  C
     //   do re mi fa so la si
-    const Drum1Options = DrumOption.options1
+    const Drum1Options = DrumOption.options2
+    const VocalPartOptions = DrumOption.vocalPart
     const fluteData = ref([
       1, 1, 1, 1, 1, 1
     ])
@@ -152,7 +166,8 @@ export default defineComponent({
       label: "1 (D do) ",
       nlabel: "1",
       elabel: "D",
-      value: 1
+      value: 1,
+      vocalPart:1
     },)
     onMounted(() => {
       //scaleChange(selectScale.value)
@@ -178,6 +193,7 @@ export default defineComponent({
           if(index == fluteData.value.length-1){
             //松开最后一个
             fluteData.value[index]=0
+            getValueByFluteData()
             return;
           }
           let bottomItem = fluteData.value[index+1]
@@ -185,17 +201,78 @@ export default defineComponent({
           if( item!= bottomItem){
             //松开下面最后一个
             fluteData.value[index]=0
+            getValueByFluteData()
             return
           }
 
           if(topItem == item){
+            getValueByFluteData()
             return
           }
         }
 
         fluteData.value[index]=0
 
+      }
+      getValueByFluteData()
 
+    }
+    const getValueByFluteData = () => {
+      //根据孔位匹配笛子的音标
+
+      let list = fluteData.value
+      console.log(list)
+      let num =0
+      list.forEach(i=>num+=i)
+      console.log(num)
+      let index = 0
+      switch (num){
+        case 0:
+          index = 6
+          break;
+        case 1:
+          index = 5
+          break;
+        case 2:
+          index = 4
+          break;
+        case 3:
+          index = 3
+          break;
+        case 4:index = 2
+          break;
+        case 5:
+          if(list[0]==0){
+            index = 1
+            selectScale.value.vocalPart=2
+            vocalPart.value=2
+          }else {
+            index = 1
+          }
+          break;
+        case 6:
+          index = 0
+          break;
+        default:
+          selectScale.value.value = 1
+          fluteData.value=[0, 1, 1, 1, 1, 1]
+      }
+      if( vocalPart.value==2&&selectScale.value.vocalPart==2){
+
+      }else {
+        selectScale.value=Drum1Options[index]
+      }
+
+
+    }
+    const VocalPartChange = (e) => {
+     //目前只知道1的高音指法不太一样
+         selectScale.value.vocalPart=e
+
+      if(e > 1){
+        if(selectScale.value.value == 1){
+          fluteData.value  = [0, 1, 1, 1, 1, 1]
+        }
 
       }
 
@@ -224,30 +301,6 @@ export default defineComponent({
           break
         case 7:
           list = [0, 0, 0, 0, 0, 0]
-          break
-        case 11:
-          list = [0, 1, 1, 1, 1, 1]
-          break
-        case 12:
-          list = [1, 1, 1, 1, 1, 0]
-          break
-        case 13:
-          list = [1, 1, 1, 1, 0, 0]
-          break
-        case 14:
-          list = [1, 1, 1, 0, 0, 0]
-          break
-        case 15:
-          list = [1, 1, 0, 0, 0, 0]
-          break
-        case 16:
-          list = [1, 0, 0, 0, 0, 0]
-          break
-        case 17:
-          list = [0, 0, 0, 0, 0, 0]
-          break
-        case 21:
-          list = [0, 1, 1, 1, 1, 1]
           break
         default:
           list = []
@@ -302,7 +355,10 @@ export default defineComponent({
 
     return {
       Drum1Options,
+      VocalPartOptions,
+      VocalPartChange,
       scale,
+      vocalPart,
       fluteData,
       changeFluteItemData,
       selectScale,
@@ -331,8 +387,22 @@ export default defineComponent({
     display: flex;
     align-items: center;
     flex-direction: column;
-
+    justify-content: center;
+    .labelBox{
+      height: 58px;
+      display: flex;
+      align-items: center;
+      flex-direction: column;
+      justify-content: center;
+    }
     .highLabel {
+      width: 12px;
+      height: 12px !important;
+      border-radius: 12px;
+      background: #000000;
+
+    }
+    .lowLabel {
       width: 12px;
       height: 12px !important;
       border-radius: 12px;
@@ -347,12 +417,14 @@ export default defineComponent({
     }
 
     .highLabelHide {
-      height: 12px;
+      //height: 12px;
 
     }
 
     .scaleLabel {
       font-size: 32px;
+      line-height: 32px;
+      margin-bottom: 2px;
 
     }
   }
@@ -365,6 +437,7 @@ export default defineComponent({
 }
 
 .flute {
+  margin-top: 12px;
   width: 28px;
   height: 280px;
 
