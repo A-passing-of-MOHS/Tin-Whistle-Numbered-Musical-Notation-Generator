@@ -100,28 +100,36 @@ export default defineComponent({
       }
     }
    const fluteList =ref([])
-    onMounted(()=>{
-     let index_musicNameStr = localStorage.getItem("index_musicName")
-      console.log(index_musicNameStr)
-      if(index_musicNameStr){
-        fluteList.value=JSON.parse(index_musicNameStr)
+    onMounted(async () => {
+      let index_musicNameStr
+      if( window.electronAPI){
+        index_musicNameStr = await window.electronAPI.getCache("index_musicName")
       }else {
-        fluteList.value= [
+        index_musicNameStr = localStorage.getItem("index_musicName")
+      }
+      console.log(JSON.parse(index_musicNameStr))
+      if (index_musicNameStr) {
+        fluteList.value = JSON.parse(index_musicNameStr)
+      } else {
+        fluteList.value = [
           {
-            value: 1
+            value: 1,
+            vocalPart:1
           },
           {
-
-            value: 1
+            value: 1,
+            vocalPart:1
           },
           {
-            value: 1
-          }]
+            value: 1,
+            vocalPart:1
+          },]
       }
     })
    const add =(type :string)=>{
      let obj :any ={
-       value:1
+       value:1,
+       vocalPart:1
      }
      if(type=="scale"){
 
@@ -138,7 +146,8 @@ export default defineComponent({
     const addItem=(index,type)=>{
      let obj = {
        flag : "新增",
-       value:1
+       value:1,
+       vocalPart:1
      }
       if(type=="space"){
         obj.space=true
@@ -148,14 +157,21 @@ export default defineComponent({
       fluteList.value=[...fluteList.value]
 
     }
-    const scaleChange=(index,scale)=>{
+    const scaleChange=(index,scale,vocalPart)=>{
       fluteList.value[index].value = scale
+      fluteList.value[index].vocalPart = vocalPart
       fluteList.value=[...fluteList.value]
     }
 
     const save =()=>{
       let musicName ="index_musicName"
-      localStorage.setItem(musicName,JSON.stringify(fluteList.value))
+      if( window.electronAPI){
+        window.electronAPI.setCache(musicName,JSON.stringify(fluteList.value))
+      }else {
+        localStorage.setItem(musicName,JSON.stringify(fluteList.value))
+      }
+
+
       ElMessage.success({
         message: '保存成功',
         type: 'success'

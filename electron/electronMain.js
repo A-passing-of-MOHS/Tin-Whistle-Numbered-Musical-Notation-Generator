@@ -2,9 +2,14 @@
  * electron 的主进程
  */
 // 导入模块
-const  { app, BrowserWindow ,ipcMain  } = require( 'electron')
-const {runCmd} = require( "./utils");
-const path = require('path')
+import   { app, BrowserWindow ,ipcMain  } from 'electron'
+import Store from 'electron-store'
+const store = new Store();
+// const {runCmd} = require( "./utils");
+import path from 'path'
+import {fileURLToPath} from "node:url";
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename)
 
 
 // 是否是开发环境
@@ -24,6 +29,15 @@ const createWindow = async () => {
         console.log(value,"缩放值")
         win.webContents.setZoomLevel(-value*0.1)
     })
+
+    ipcMain.on('set-cache', (event, key, value) => {
+        store.set(key, value);
+    });
+
+    ipcMain.handle('get-cache', async (event, key) => {
+       return store.get(key);
+
+    });
 
 
     //隐藏顶部菜单

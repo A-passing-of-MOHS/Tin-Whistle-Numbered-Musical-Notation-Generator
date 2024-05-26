@@ -151,7 +151,8 @@ export default defineComponent({
     }
   },
   setup(props, context) {
-    const scale = ref(null)
+    console.log(JSON.stringify(props.value),"props66")
+    const scale = ref({value: 1})
     const vocalPart = ref(1)
     const visible = ref(false)
 
@@ -171,11 +172,20 @@ export default defineComponent({
     },)
     onMounted(() => {
       //scaleChange(selectScale.value)
+      vocalPart.value=props.value.vocalPart
       scaleChange(props.value)
+      console.log('scaleChange',props.value)
+
+      VocalPartChange(props.value.vocalPart)
+
     })
     watch(() => props.value, (newValue, oldValue) => {
+      vocalPart.value=props.value.vocalPart
       scaleChange(newValue)
+
+      VocalPartChange(props.value.vocalPart)
     })
+
     const changeFluteItemData = (index) => {
       let item = fluteData.value[index]
       if(item == 0){
@@ -275,6 +285,7 @@ export default defineComponent({
         }
 
       }
+      context.emit("change", props.index, selectScale.value.value,vocalPart.value)
 
     }
 
@@ -312,7 +323,7 @@ export default defineComponent({
           selectScale.value = item
         }
       })
-      context.emit("change", props.index, e.value)
+      context.emit("change", props.index, e.value,vocalPart.value)
     }
 
     const deleteItem = () => {

@@ -5,7 +5,7 @@
   "description": "tin-whistle-numbered-musical-notation-generator",
   "private": true,
   "version": "1.1.0",
-  "type": "commonjs",
+  "type": "module",
   "scripts": {
     "dev": "vite",
     "dev:electron": "cross-env IS_DEV=true electron .",
@@ -19,6 +19,7 @@
   "dependencies": {
     "cross-env": "^7.0.3",
     "electron-squirrel-startup": "^1.0.1",
+    "electron-store": "^9.0.0",
     "element-plus": "^2.7.3",
     "vue": "^3.4.21",
     "vue-router": "^4.3.2"
