@@ -2,6 +2,9 @@ const { FusesPlugin } = require('@electron-forge/plugin-fuses');
 const { FuseV1Options, FuseVersion } = require('@electron/fuses');
 
 module.exports = {
+  packagerConfig: {
+    asar: true,
+  },
   // packagerConfig: {
   //   name: 'APP_NAME',
   //   // 不加扩展名，MAC 会自动查找 .icns、WIN 使用 .ico

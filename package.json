@@ -1,10 +1,10 @@
 {
   "main": "electron/electronMain.js",
-  "name": "zftscq",
-  "author": "ffzb",
-  "description": "The Project of Electron + Vue3 + Electron Forge",
+  "name": "tin-whistle-numbered-musical-notation-generator",
+  "author": "LeaveEarly",
+  "description": "",
   "private": true,
-  "version": "0.0.0",
+  "version": "1.1.0",
   "type": "commonjs",
   "scripts": {
     "dev": "vite",
