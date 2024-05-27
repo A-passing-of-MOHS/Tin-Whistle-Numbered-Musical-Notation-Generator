@@ -34,11 +34,21 @@ const createWindow = async () => {
         store.set(key, value);
     });
 
-    ipcMain.handle('get-cache', async (event, key) => {
+    ipcMain.handle('get-cache',  (event, key) => {
        return store.get(key);
 
     });
 
+    let level = 0;
+    // 缩放
+    win.webContents.on('zoom-changed',(e, zoomDirection)=>{
+        if (zoomDirection === 'in') {
+            level = level >= 3 ? level : level += 0.2
+        } else {
+            level = level <= -3 ? level : level -= 0.2
+        }
+        win.webContents.setZoomLevel(level)
+    })
 
     //隐藏顶部菜单
    win.setMenu(null);

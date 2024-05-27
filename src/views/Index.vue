@@ -1,8 +1,8 @@
 <template>
   <div class="top-bar">
-    <div style="width: 100%">
-      <el-slider v-model="value"  @change="sliderChange" />
-    </div>
+<!--    <div style="width: 100%">-->
+<!--      <el-slider v-model="value"  @change="sliderChange" />-->
+<!--    </div>-->
     <div class="setupIcon">
       <el-dropdown trigger="click" >
       <span class="el-dropdown-link">
@@ -31,7 +31,16 @@
                 <span class="setupTit">显示字母</span>
               </div>
             </el-dropdown-item>
-
+            <el-dropdown-item>
+              <div>
+                <el-switch v-model="isAutoSave" @change="isAutoSaveChange" active-color="#13ce66" inactive-color="#ff4949">
+                </el-switch>
+                <span class="setupTit">自动保存</span>
+              </div>
+            </el-dropdown-item>
+            <el-dropdown-item>
+              请作者喝杯咖啡
+            </el-dropdown-item>
 
           </el-dropdown-menu>
         </template>
@@ -74,6 +83,7 @@
 import { ElMessage } from 'element-plus'
 import {defineComponent, onMounted,onBeforeUnmount, ref} from "vue";
 import Flute from "../components/Flute/Flute.vue";
+import {getCache, setCache} from "./cache.ts";
 export default defineComponent({
  name: "index",
   components: {
@@ -100,35 +110,48 @@ export default defineComponent({
       }
     }
    const fluteList =ref([])
-    onMounted(async () => {
-      let index_musicNameStr
-      if( window.electronAPI){
-        index_musicNameStr = await window.electronAPI.getCache("index_musicName")
-      }else {
-        index_musicNameStr = localStorage.getItem("index_musicName")
+    onMounted( async () => {
+      await initConfig()
+    })
+
+
+
+    const initConfig = async () => {
+      let index_musicNameStr = await getCache("index_musicName")
+       isAutoSave.value = await getCache("isAutoSave")
+      if( isAutoSave.value ){
+        openAutoSave()
       }
-      console.log(JSON.parse(index_musicNameStr))
+
+      console.log(index_musicNameStr)
       if (index_musicNameStr) {
         fluteList.value = JSON.parse(index_musicNameStr)
       } else {
         fluteList.value = [
           {
             value: 1,
-            vocalPart:1
+            vocalPart: 1
           },
           {
             value: 1,
-            vocalPart:1
+            vocalPart: 1
           },
           {
             value: 1,
-            vocalPart:1
+            vocalPart: 1
           },]
       }
-    })
+    }
+
+    let intervalId
+    const openAutoSave = ()=> {
+      intervalId =  setInterval(()=>{
+          save()
+        },30000)
+    }
    const add =(type :string)=>{
      let obj :any ={
-       value:1,
+       value:7,
        vocalPart:1
      }
      if(type=="scale"){
@@ -165,12 +188,8 @@ export default defineComponent({
 
     const save =()=>{
       let musicName ="index_musicName"
-      if( window.electronAPI){
-        window.electronAPI.setCache(musicName,JSON.stringify(fluteList.value))
-      }else {
-        localStorage.setItem(musicName,JSON.stringify(fluteList.value))
-      }
 
+      setCache(musicName,JSON.stringify(fluteList.value))
 
       ElMessage.success({
         message: '保存成功',
@@ -194,12 +213,27 @@ export default defineComponent({
 
     }
 
+    const isAutoSave=ref()
+    const isAutoSaveChange = () => {
+        if(isAutoSave.value){
+          openAutoSave()
+        }else {
+          clearInterval(intervalId)
+        }
+        setCache("isAutoSave",isAutoSave.value)
+
+    }
+
+
+
     return{
       value,
       fluteList,
       isShowFlute,
       isShowNumber,
       isShowLetter,
+      isAutoSave ,
+      isAutoSaveChange,
       add,
       sliderChange,
       deleteItem,

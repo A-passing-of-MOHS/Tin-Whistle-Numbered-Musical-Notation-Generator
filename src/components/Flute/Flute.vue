@@ -161,13 +161,13 @@ export default defineComponent({
     const Drum1Options = DrumOption.options2
     const VocalPartOptions = DrumOption.vocalPart
     const fluteData = ref([
-      1, 1, 1, 1, 1, 1
+      0, 0, 0, 0, 0, 0
     ])
     const selectScale = ref({
       label: "1 (D do) ",
       nlabel: "1",
       elabel: "D",
-      value: 1,
+      value: 0,
       vocalPart:1
     },)
     onMounted(() => {
