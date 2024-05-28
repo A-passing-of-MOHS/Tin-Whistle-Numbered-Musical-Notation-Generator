@@ -2,7 +2,7 @@
  * electron 的主进程
  */
 // 导入模块
-import   { app, BrowserWindow ,ipcMain  } from 'electron'
+import   { app, BrowserWindow ,ipcMain,shell  } from 'electron'
 import Store from 'electron-store'
 const store = new Store();
 // const {runCmd} = require( "./utils");
@@ -29,6 +29,13 @@ const createWindow = async () => {
         console.log(value,"缩放值")
         win.webContents.setZoomLevel(-value*0.1)
     })
+
+    ipcMain.on('open-url', (event, value) => {
+        console.log(value,"缩放值")
+        shell.openExternal(value)
+    })
+
+
 
     ipcMain.on('set-cache', (event, key, value) => {
         store.set(key, value);

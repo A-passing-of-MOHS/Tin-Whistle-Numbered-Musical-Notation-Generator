@@ -5,11 +5,16 @@
 <!--    </div>-->
     <div class="setupIcon">
       <el-dropdown trigger="click" >
-      <span class="el-dropdown-link">
-        设置<i class="el-icon-arrow-down el-icon--right"></i>
+      <span class="el-dropdown-link" style="display: flex;align-items: center">
+        <el-icon size="16"><Setting /></el-icon>
+        <div style="margin-left: 6px">设置</div>
       </span>
         <template #dropdown>
           <el-dropdown-menu>
+            <el-dropdown-item @click="toCanvas">
+              <el-icon><Download /></el-icon>
+              导出为图片
+            </el-dropdown-item>
             <el-dropdown-item>
                <div>
                  <el-switch v-model="isShowFlute" active-color="#13ce66" inactive-color="#ff4949">
@@ -38,7 +43,10 @@
                 <span class="setupTit">自动保存</span>
               </div>
             </el-dropdown-item>
-            <el-dropdown-item>
+
+
+
+            <el-dropdown-item @click="coffeeOpen">
               请作者喝杯咖啡
             </el-dropdown-item>
 
@@ -50,7 +58,7 @@
 
 
   </div>
-  <div class="fluteList-box">
+  <div class="fluteList-box" id="fluteListBox">
     <Flute v-for="(item,index) in fluteList"
            :isShow="!item.space"
            :index="index"
@@ -64,7 +72,7 @@
            @addItem="addItem"
            @change="scaleChange"
     />
-    <div class="btn-list">
+    <div class="btn-list" data-html2canvas-ignore="true">
       <el-row>
         <el-button type="primary" style="margin-bottom: 10px;" @click="add('scale')">添加音阶</el-button>
       </el-row>
@@ -75,19 +83,23 @@
         <el-button  @click="save"  style="width: 98px;">保  存</el-button>
       </el-row>
     </div>
+    <Coffee  ref="coffeeRef"></Coffee>
   </div>
 
 </template>
 
 <script  lang="ts">
-import { ElMessage } from 'element-plus'
+import {ElMessage, ElMessageBox} from 'element-plus'
 import {defineComponent, onMounted,onBeforeUnmount, ref} from "vue";
 import Flute from "../components/Flute/Flute.vue";
 import {getCache, setCache} from "./cache.ts";
+import Coffee from "../components/Coffee.vue";
+import html2canvas from 'html2canvas'
 export default defineComponent({
  name: "index",
   components: {
-    Flute
+    Flute,
+    Coffee
   },
   setup(context) {
    onMounted(()=>{
@@ -97,7 +109,44 @@ export default defineComponent({
           window.removeEventListener('keydown',handleKeyDown);
         }
     )
-    
+    const toCanvas =async () => {
+       let fileName = await new Promise((resolve, reject) => {
+        ElMessageBox.prompt('请输入保存的名称', '导出', {
+          confirmButtonText: '确认',
+          cancelButtonText: '取消',
+
+        })
+            .then(({value}) => {
+              resolve(value)
+            })
+            .catch(() => {
+              resolve('')
+            })
+
+      })
+
+      if(!fileName){
+        return
+      }
+
+      const canvasDom = document.getElementById("fluteListBox")
+
+      html2canvas(canvasDom, {scale: 1.3, windowWidth: 1920}).then((canvas) => {
+        let canvasImg = canvas.toDataURL('image/png')
+        let link = document.createElement('a')
+        link.href = canvasImg
+        link.setAttribute('download', fileName+'.png')
+        link.click()
+        link.remove()
+      }).catch(() => {
+
+      })
+
+    }
+    const coffeeRef = ref()
+    const coffeeOpen = () => {
+      coffeeRef.value.open()
+    }
     const handleKeyDown = (event) => {
 
       if (event.code === 'Enter') {
@@ -233,6 +282,9 @@ export default defineComponent({
       isShowNumber,
       isShowLetter,
       isAutoSave ,
+      coffeeOpen,
+      coffeeRef,
+      toCanvas,
       isAutoSaveChange,
       add,
       sliderChange,
