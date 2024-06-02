@@ -200,7 +200,7 @@ export default defineComponent({
     const initConfig = async () => {
      let mode = await getCache("currentMode")
       if( mode){
-        currentMode.value=mode
+        currentMode.value=JSON.parse(mode)
       }else {
         currentMode.value= {label:'筒音1模式',value:0,tooltip:''}
       }
@@ -238,7 +238,7 @@ export default defineComponent({
     }
    const add =(type :string)=>{
      let obj :any ={
-       value:7,
+       value:1,
        vocalPart:1
      }
      if(type=="scale"){
@@ -325,7 +325,7 @@ export default defineComponent({
 
         if (res === 'confirm') {
           currentMode.value = mode
-          setCache("currentMode",mode)
+          setCache("currentMode",JSON.stringify(mode))
           if(mode.value === 2){
             fluteList.value = []
             }
