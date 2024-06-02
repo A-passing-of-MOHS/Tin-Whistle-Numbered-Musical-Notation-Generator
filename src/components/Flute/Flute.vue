@@ -148,6 +148,12 @@ export default defineComponent({
       default() {
         return true
       }
+    },
+    currentMode:{
+      type: Number,
+      default() {
+        return 0
+      }
     }
   },
   setup(props, context) {
@@ -173,8 +179,7 @@ export default defineComponent({
     onMounted(() => {
       //scaleChange(selectScale.value)
       vocalPart.value=props.value.vocalPart
-      scaleChange(props.value)
-      console.log('scaleChange',props.value)
+      modeChange()
 
       VocalPartChange(props.value.vocalPart)
 
@@ -182,11 +187,33 @@ export default defineComponent({
     watch(() => props.value, (newValue, oldValue) => {
       vocalPart.value=props.value.vocalPart
       scaleChange(newValue)
-
       VocalPartChange(props.value.vocalPart)
     })
 
+    let FingeringList=[] //对应的指法
+    function modeChange() {
+      let mode = props.currentMode
+      if (mode == 0){
+        FingeringList = DrumOption.FingeringList_D
+      }else if(mode == 1){
+        FingeringList = DrumOption.FingeringList_G
+      }else {
+        FingeringList=[]
+      }
+
+      scaleChange(props.value)
+
+    }
+
+    watch(() => props.currentMode, (newValue, oldValue) => {
+      modeChange(newValue)
+    })
+
     const changeFluteItemData = (index) => {
+      //只有专业模式下可以点
+      if (props.currentMode != 2) {
+        return
+      }
       let item = fluteData.value[index]
       if(item == 0){
           let newArr =[]
@@ -290,33 +317,37 @@ export default defineComponent({
     }
 
     const scaleChange = (e) => {
-      let list = [0, 0, 0, 0, 0, 0]
-      switch (e.value) {
-        case 1:
-          list = [1, 1, 1, 1, 1, 1]
-          break
-        case 2:
-          list = [1, 1, 1, 1, 1, 0]
-          break
-        case 3:
-          list = [1, 1, 1, 1, 0, 0]
-          break
-        case 4:
-          list = [1, 1, 1, 0, 0, 0]
-          break
-        case 5:
-          list = [1, 1, 0, 0, 0, 0]
-          break
-        case 6:
-          list = [1, 0, 0, 0, 0, 0]
-          break
-        case 7:
-          list = [0, 0, 0, 0, 0, 0]
-          break
-        default:
-          list = []
 
+      let list = [0, 0, 0, 0, 0, 0]
+      if(FingeringList.length>0){
+        switch (e.value) {
+          case 1:
+            list = FingeringList[0]
+            break
+          case 2:
+            list = FingeringList[1]
+            break
+          case 3:
+            list = FingeringList[2]
+            break
+          case 4:
+            list = FingeringList[3]
+            break
+          case 5:
+            list = FingeringList[4]
+            break
+          case 6:
+            list = FingeringList[5]
+            break
+          case 7:
+            list = FingeringList[6]
+            break
+          default:
+            list = []
+
+        }
       }
+
       fluteData.value = list
       Drum1Options.forEach(item => {
         if (item.value == e.value) {

@@ -1,65 +1,96 @@
 <template>
-  <div class="top-bar">
-<!--    <div style="width: 100%">-->
-<!--      <el-slider v-model="value"  @change="sliderChange" />-->
-<!--    </div>-->
-    <div class="setupIcon">
-      <el-dropdown trigger="click" >
+  <el-affix :offset="0">
+    <div class="top-bar">
+      <div class="modeBox">
+        <el-dropdown trigger="click" >
+      <span class="el-dropdown-link" style="display: flex;align-items: center">
+        <el-icon size="18"><Connection /></el-icon>
+        <div style="margin-left: 6px;font-size: 18px; font-weight: bold">{{ currentMode.label }} </div>
+      </span>
+          <template #dropdown>
+            <el-dropdown-menu>
+              <template
+                  v-for="item in ModeList"
+                  :key="item.value">
+                <el-dropdown-item v-if="item.value!=currentMode.value" @click="changeMode(item)">{{ item.label }}
+                  <el-tooltip
+                      v-if="item.tooltip"
+                      style="margin-left: 12px"
+                      :content="item.tooltip"
+                      placement="right-start"
+                  >
+                    <el-icon><QuestionFilled /></el-icon>
+                  </el-tooltip></el-dropdown-item>
+
+              </template>
+
+            </el-dropdown-menu>
+          </template>
+        </el-dropdown>
+      </div>
+      <!--    <div style="width: 100%">-->
+      <!--      <el-slider v-model="value"  @change="sliderChange" />-->
+      <!--    </div>-->
+      <div class="setupIcon">
+        <el-dropdown trigger="click" >
       <span class="el-dropdown-link" style="display: flex;align-items: center">
         <el-icon size="16"><Setting /></el-icon>
         <div style="margin-left: 6px">设置</div>
       </span>
-        <template #dropdown>
-          <el-dropdown-menu>
-            <el-dropdown-item @click="toCanvas">
-              <el-icon><Download /></el-icon>
-              导出为图片
-            </el-dropdown-item>
-            <el-dropdown-item>
-               <div>
-                 <el-switch v-model="isShowFlute" active-color="#13ce66" inactive-color="#ff4949">
-                 </el-switch>
-                <span class="setupTit">隐藏笛子</span>
-               </div>
-            </el-dropdown-item>
-            <el-dropdown-item>
-              <div>
-                <el-switch v-model="isShowNumber" active-color="#13ce66" inactive-color="#ff4949">
-                </el-switch>
-                <span class="setupTit">显示数字</span>
-              </div>
-            </el-dropdown-item>
-            <el-dropdown-item>
-              <div>
-                <el-switch v-model="isShowLetter" active-color="#13ce66" inactive-color="#ff4949">
-                </el-switch>
-                <span class="setupTit">显示字母</span>
-              </div>
-            </el-dropdown-item>
-            <el-dropdown-item>
-              <div>
-                <el-switch v-model="isAutoSave" @change="isAutoSaveChange" active-color="#13ce66" inactive-color="#ff4949">
-                </el-switch>
-                <span class="setupTit">自动保存</span>
-              </div>
-            </el-dropdown-item>
+          <template #dropdown>
+            <el-dropdown-menu>
+              <el-dropdown-item @click="toCanvas">
+                <el-icon><Download /></el-icon>
+                导出为图片
+              </el-dropdown-item>
+              <el-dropdown-item>
+                <div>
+                  <el-switch v-model="isShowFlute" active-color="#13ce66" inactive-color="#ff4949">
+                  </el-switch>
+                  <span class="setupTit">隐藏笛子</span>
+                </div>
+              </el-dropdown-item>
+              <el-dropdown-item>
+                <div>
+                  <el-switch v-model="isShowNumber" active-color="#13ce66" inactive-color="#ff4949">
+                  </el-switch>
+                  <span class="setupTit">显示数字</span>
+                </div>
+              </el-dropdown-item>
+              <el-dropdown-item>
+                <div>
+                  <el-switch v-model="isShowLetter" active-color="#13ce66" inactive-color="#ff4949">
+                  </el-switch>
+                  <span class="setupTit">显示字母</span>
+                </div>
+              </el-dropdown-item>
+              <el-dropdown-item>
+                <div>
+                  <el-switch v-model="isAutoSave" @change="isAutoSaveChange" active-color="#13ce66" inactive-color="#ff4949">
+                  </el-switch>
+                  <span class="setupTit">自动保存</span>
+                </div>
+              </el-dropdown-item>
 
 
 
-            <el-dropdown-item @click="coffeeOpen">
-              请作者喝杯咖啡
-            </el-dropdown-item>
+              <el-dropdown-item @click="coffeeOpen">
+                请作者喝杯咖啡
+              </el-dropdown-item>
 
-          </el-dropdown-menu>
-        </template>
-      </el-dropdown>
+            </el-dropdown-menu>
+          </template>
+        </el-dropdown>
+      </div>
+
+
+
     </div>
+  </el-affix>
 
-
-
-  </div>
   <div class="fluteList-box" id="fluteListBox">
     <Flute v-for="(item,index) in fluteList"
+           :currentMode="currentMode.value"
            :isShow="!item.space"
            :index="index"
            :key="index"
@@ -95,6 +126,7 @@ import Flute from "../components/Flute/Flute.vue";
 import {getCache, setCache} from "./cache.ts";
 import Coffee from "../components/Coffee.vue";
 import html2canvas from 'html2canvas'
+import {ModeList} from "./constant.ts";
 export default defineComponent({
  name: "index",
   components: {
@@ -166,6 +198,12 @@ export default defineComponent({
 
 
     const initConfig = async () => {
+     let mode = await getCache("currentMode")
+      if( mode){
+        currentMode.value=mode
+      }else {
+        currentMode.value= {label:'筒音1模式',value:0,tooltip:''}
+      }
       let index_musicNameStr = await getCache("index_musicName")
        isAutoSave.value = await getCache("isAutoSave")
       if( isAutoSave.value ){
@@ -274,14 +312,41 @@ export default defineComponent({
     }
 
 
+    const currentMode = ref(  {label:'筒音1模式',value:0,tooltip:''});
+    const changeMode = async (mode) => {
+      let str = `确定要切换为${mode.label}吗？`
+      try{
 
+        let res = await ElMessageBox.confirm(str, '提示', {
+          confirmButtonText: '确认',
+          cancelButtonText: '取消',
+
+        })
+
+        if (res === 'confirm') {
+          currentMode.value = mode
+          setCache("currentMode",mode)
+          if(mode.value === 2){
+            fluteList.value = []
+            }
+          }
+
+        }catch (e) {
+
+      }
+
+
+    };
     return{
+      currentMode,
+      changeMode,
       value,
       fluteList,
       isShowFlute,
       isShowNumber,
       isShowLetter,
       isAutoSave ,
+      ModeList,
       coffeeOpen,
       coffeeRef,
       toCanvas,
@@ -309,6 +374,9 @@ export default defineComponent({
   display: flex;
   .setupIcon{
     margin-left: auto;
+
+  }
+  .modeBox{
 
   }
 }

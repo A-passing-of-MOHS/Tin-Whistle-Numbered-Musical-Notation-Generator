@@ -3,7 +3,7 @@ import { FuseV1Options, FuseVersion } from '@electron/fuses';
 
 export default  {
   packagerConfig: {
-    appVersion: "1.1.1",
+    appVersion: "1.2.1",
     name: "指法图生成器",
     asar: true,
   },
