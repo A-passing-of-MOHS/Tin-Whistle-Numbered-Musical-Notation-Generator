@@ -76,7 +76,10 @@
             <div class="top"></div>
             <div class="holeList">
               <div class="line"></div>
-              <div v-for="(item,index) in fluteData" @click.stop="changeFluteItemData(index)" class="hole" :style="{background:item==1?'black':''  }"></div>
+              <div v-for="(item,index) in fluteData" @click.stop="changeFluteItemData(index)"
+                   class="hole"
+                   :class="item==2?'hole2':''"
+                   :style="{background:item==1?'black':''  }"></div>
             </div>
           </div>
 
@@ -211,47 +214,24 @@ export default defineComponent({
 
     const changeFluteItemData = (index) => {
       //只有专业模式下可以点
-      if (props.currentMode != 2) {
+      if (props.currentMode != 20) {
         return
       }
       let item = fluteData.value[index]
-      if(item == 0){
-          let newArr =[]
-          for (let i = 0; i <=index; i++) {
-            newArr.push(1)
-          }
-          fluteData.value.splice(0,newArr.length,...newArr)
-
-
-      }else {
-        if (index>0){
-          let topItem = fluteData.value[index-1]
-
-          if(index == fluteData.value.length-1){
-            //松开最后一个
-            fluteData.value[index]=0
-            getValueByFluteData()
-            return;
-          }
-          let bottomItem = fluteData.value[index+1]
-
-          if( item!= bottomItem){
-            //松开下面最后一个
-            fluteData.value[index]=0
-            getValueByFluteData()
-            return
-          }
-
-          if(topItem == item){
-            getValueByFluteData()
-            return
-          }
-        }
-
-        fluteData.value[index]=0
-
-      }
-      getValueByFluteData()
+     switch (item){
+       case  0:
+          fluteData.value[index]=1
+          break;
+       case  1:
+          fluteData.value[index]=2
+          break;
+       case  2:
+         fluteData.value[index]=0
+         break;
+       default:
+         fluteData.value[index]=0
+         break;
+     }
 
     }
     const getValueByFluteData = () => {
@@ -303,20 +283,45 @@ export default defineComponent({
 
     }
     const VocalPartChange = (e) => {
-     //目前只知道1的高音指法不太一样
+
          selectScale.value.vocalPart=e
 
       if(e > 1){
         if(selectScale.value.value == 1){
-          fluteData.value  = [0, 1, 1, 1, 1, 1]
+          //D调1的高音指法不太一样
+          if( props.currentMode==0){
+            fluteData.value  = [0, 1, 1, 1, 1, 1]
+          }
+
         }
+
+        if(selectScale.value.value == 4){
+          //G调4的高音指法不太一样
+          if( props.currentMode==1){
+            fluteData.value  = [0, 1, 1, 1, 1, 0]
+          }
+
+        }
+
 
       }
       context.emit("change", props.index, selectScale.value.value,vocalPart.value)
 
     }
 
+
+
     const scaleChange = (e) => {
+      if(props.currentMode==20){
+        //专业模式下无联动
+        Drum1Options.forEach(item => {
+          if (item.value == e.value) {
+            selectScale.value = item
+          }
+        })
+        context.emit("change", props.index, e.value,vocalPart.value)
+        return
+      }
 
       let list = [0, 0, 0, 0, 0, 0]
       if(FingeringList.length>0){
@@ -514,6 +519,26 @@ export default defineComponent({
         height: 20px;
         border-radius: 20px;
         background: white;
+        overflow: hidden;
+        position: relative;
+      }
+      .hole2 {
+        width: 20px;
+        height: 20px;
+        border-radius: 20px;
+        background: black;
+        overflow: hidden;
+        position: relative;
+      }
+      .hole2::before {
+        content: "";
+        width: 100%;
+        height: 200%;
+        background-color: white;
+        position: absolute;
+        bottom: -100%;
+
+
       }
     }
 
