@@ -6,6 +6,10 @@ import vue from '@vitejs/plugin-vue'
 import { fileURLToPath, URL } from 'node:url'
 
 // https://vitejs.dev/config/
+import legacy from '@vitejs/plugin-legacy';
+
+
+
 export default defineConfig({
   plugins: [
       vue(),
@@ -14,6 +18,10 @@ export default defineConfig({
     }),
     Components({
       resolvers: [ElementPlusResolver()],
+    }),
+    legacy({
+      targets: ['ie>=11'],
+      additionalLegacyPolyfills: ['regenerator-runtime/runtime'],
     }),
 
   ],

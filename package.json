@@ -4,7 +4,7 @@
   "author": "LeaveEarly",
   "description": "tin-whistle-numbered-musical-notation-generator",
   "private": true,
-  "version": "1.1.1",
+  "version": "1.2.2",
   "type": "module",
   "scripts": {
     "dev": "vite",
@@ -34,6 +34,7 @@
     "@electron-forge/plugin-auto-unpack-natives": "^7.4.0",
     "@electron-forge/plugin-fuses": "^7.4.0",
     "@electron/fuses": "^1.8.0",
+    "@vitejs/plugin-legacy": "^5.4.1",
     "@vitejs/plugin-vue": "^5.0.4",
     "babel-eslint": "^10.1.0",
     "electron": "^30.0.6",

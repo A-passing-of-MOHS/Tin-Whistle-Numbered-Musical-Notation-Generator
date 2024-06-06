@@ -28,9 +28,7 @@
           </template>
         </el-dropdown>
       </div>
-      <!--    <div style="width: 100%">-->
-      <!--      <el-slider v-model="value"  @change="sliderChange" />-->
-      <!--    </div>-->
+
       <div class="setupIcon">
         <el-dropdown trigger="click" >
       <span class="el-dropdown-link" style="display: flex;align-items: center">
@@ -40,7 +38,7 @@
           <template #dropdown>
             <el-dropdown-menu>
               <el-dropdown-item @click="toCanvas">
-                <el-icon><Download /></el-icon>
+                <el-icon size="16"><Download /></el-icon>
                 导出为图片
               </el-dropdown-item>
               <el-dropdown-item>
@@ -72,9 +70,13 @@
                 </div>
               </el-dropdown-item>
 
-
+              <el-dropdown-item @click="clearAll">
+                <el-icon size="16" color="#F56C6C"><DeleteFilled /></el-icon>
+                清空全部
+              </el-dropdown-item>
 
               <el-dropdown-item @click="coffeeOpen">
+                <el-icon size="16" color="#409EFF"><CoffeeCup /></el-icon>
                 请作者喝杯咖啡
               </el-dropdown-item>
 
@@ -180,15 +182,36 @@ export default defineComponent({
       coffeeRef.value.open()
     }
     const handleKeyDown = (event) => {
-
-      if (event.code === 'Enter') {
-        // 处理回车键按下事件
-        add('scale')
-      }
+      // if (event.code === 'Enter') {
+      //   // 处理回车键按下事件
+      //   add('scale')
+      // }
       if (event.code === 'Space') {
         // 处理空格按下事件
         add('space')
       }
+      if (event.key === "1") {
+        add('scale',1)
+      }
+      if (event.key === "2") {
+        add('scale',2)
+      }
+      if (event.key === "3") {
+        add('scale',3)
+      }
+      if (event.key === "4") {
+        add('scale',4)
+      }
+      if (event.key === "5") {
+        add('scale',5)
+      }
+      if (event.key === "6") {
+        add('scale',6)
+      }
+      if (event.key === "7") {
+        add('scale',7)
+      }
+
     }
    const fluteList =ref([])
     onMounted( async () => {
@@ -236,9 +259,9 @@ export default defineComponent({
           save()
         },30000)
     }
-   const add =(type :string)=>{
+   const add =(type :string,value?:number)=>{
      let obj :any ={
-       value:1,
+       value:value,
        vocalPart:1
      }
      if(type=="scale"){
@@ -294,11 +317,7 @@ export default defineComponent({
 
 
 
-    const sliderChange = (val)=>{
-      // 发送消息到主进程
-    window.electronAPI.setSlider(val)
 
-    }
 
     const isAutoSave=ref()
     const isAutoSaveChange = () => {
@@ -311,55 +330,70 @@ export default defineComponent({
 
     }
 
+    const clearAll=async () => {
+      let res = await ElMessageBox.confirm("确定要清空当前谱子吗", '提示', {
+        confirmButtonText: '确认',
+        cancelButtonText: '取消',
 
-    const currentMode = ref(  {label:'筒音1模式',value:0,tooltip:''});
-    const changeMode = async (mode) => {
-      let str = `确定要切换为${mode.label}吗？`
-      try{
+      })
 
-        let res = await ElMessageBox.confirm(str, '提示', {
-          confirmButtonText: '确认',
-          cancelButtonText: '取消',
+      if (res === 'confirm') {
+        fluteList.value = []
+        setCache("index_musicName",JSON.stringify(fluteList.value))
+        ElMessage.success({
+          message: '清空成功',
+          type: 'success'
+        });
+      }
+      }
+      const currentMode = ref({label: '筒音1模式', value: 0, tooltip: ''});
+      const changeMode = async (mode) => {
+        let str = `确定要切换为${mode.label}吗？`
+        try {
 
-        })
+          let res = await ElMessageBox.confirm(str, '提示', {
+            confirmButtonText: '确认',
+            cancelButtonText: '取消',
 
-        if (res === 'confirm') {
-          currentMode.value = mode
-          setCache("currentMode",JSON.stringify(mode))
-          if(mode.value === 2){
-            fluteList.value = []
+          })
+
+          if (res === 'confirm') {
+            currentMode.value = mode
+            setCache("currentMode", JSON.stringify(mode))
+            if (mode.value === 2) {
+              fluteList.value = []
             }
           }
 
-        }catch (e) {
+        } catch (e) {
+
+        }
+
+
+      };
+      return {
+        currentMode,
+        changeMode,
+        value,
+        fluteList,
+        isShowFlute,
+        isShowNumber,
+        isShowLetter,
+        isAutoSave,
+        ModeList,
+        coffeeOpen,
+        clearAll,
+        coffeeRef,
+        toCanvas,
+        isAutoSaveChange,
+        add,
+        deleteItem,
+        addItem,
+        scaleChange,
+        save
 
       }
-
-
-    };
-    return{
-      currentMode,
-      changeMode,
-      value,
-      fluteList,
-      isShowFlute,
-      isShowNumber,
-      isShowLetter,
-      isAutoSave ,
-      ModeList,
-      coffeeOpen,
-      coffeeRef,
-      toCanvas,
-      isAutoSaveChange,
-      add,
-      sliderChange,
-      deleteItem,
-      addItem,
-      scaleChange,
-      save
-
     }
-  }
 })
 
 
