@@ -1,122 +1,125 @@
 <template>
-  <el-affix :offset="0">
-    <div class="top-bar">
-      <div class="modeBox">
-        <el-dropdown trigger="click" >
+  <div>
+    <el-affix :offset="0">
+      <div class="top-bar">
+        <div class="modeBox">
+          <el-dropdown trigger="click" >
       <span class="el-dropdown-link" style="display: flex;align-items: center">
         <el-icon size="18"><Connection /></el-icon>
         <div style="margin-left: 6px;font-size: 18px; font-weight: bold">{{ currentMode.label }} </div>
       </span>
-          <template #dropdown>
-            <el-dropdown-menu>
-              <template
-                  v-for="item in ModeList"
-                  :key="item.value">
-                <el-dropdown-item v-if="item.value!=currentMode.value" @click="changeMode(item)">{{ item.label }}
-                  <el-tooltip
-                      v-if="item.tooltip"
-                      style="margin-left: 12px"
-                      :content="item.tooltip"
-                      placement="right-start"
-                  >
-                    <el-icon><QuestionFilled /></el-icon>
-                  </el-tooltip></el-dropdown-item>
+            <template #dropdown>
+              <el-dropdown-menu>
+                <template
+                    v-for="item in ModeList"
+                    :key="item.value">
+                  <el-dropdown-item v-if="item.value!=currentMode.value" @click="changeMode(item)">{{ item.label }}
+                    <el-tooltip
+                        v-if="item.tooltip"
+                        style="margin-left: 12px"
+                        :content="item.tooltip"
+                        placement="right-start"
+                    >
+                      <el-icon><QuestionFilled /></el-icon>
+                    </el-tooltip></el-dropdown-item>
 
-              </template>
+                </template>
 
-            </el-dropdown-menu>
-          </template>
-        </el-dropdown>
-      </div>
+              </el-dropdown-menu>
+            </template>
+          </el-dropdown>
+        </div>
 
-      <div class="setupIcon">
-        <el-dropdown trigger="click" >
+        <div class="setupIcon">
+          <el-dropdown trigger="click" >
       <span class="el-dropdown-link" style="display: flex;align-items: center">
         <el-icon size="16"><Setting /></el-icon>
         <div style="margin-left: 6px">设置</div>
       </span>
-          <template #dropdown>
-            <el-dropdown-menu>
-              <el-dropdown-item @click="toCanvas">
-                <el-icon size="16"><Download /></el-icon>
-                导出为图片
-              </el-dropdown-item>
-              <el-dropdown-item>
-                <div>
-                  <el-switch v-model="isShowFlute" active-color="#13ce66" inactive-color="#ff4949">
-                  </el-switch>
-                  <span class="setupTit">隐藏笛子</span>
-                </div>
-              </el-dropdown-item>
-              <el-dropdown-item>
-                <div>
-                  <el-switch v-model="isShowNumber" active-color="#13ce66" inactive-color="#ff4949">
-                  </el-switch>
-                  <span class="setupTit">显示数字</span>
-                </div>
-              </el-dropdown-item>
-              <el-dropdown-item>
-                <div>
-                  <el-switch v-model="isShowLetter" active-color="#13ce66" inactive-color="#ff4949">
-                  </el-switch>
-                  <span class="setupTit">显示字母</span>
-                </div>
-              </el-dropdown-item>
-              <el-dropdown-item>
-                <div>
-                  <el-switch v-model="isAutoSave" @change="isAutoSaveChange" active-color="#13ce66" inactive-color="#ff4949">
-                  </el-switch>
-                  <span class="setupTit">自动保存</span>
-                </div>
-              </el-dropdown-item>
+            <template #dropdown>
+              <el-dropdown-menu>
+                <el-dropdown-item @click="toCanvas">
+                  <el-icon size="16"><Download /></el-icon>
+                  导出为图片
+                </el-dropdown-item>
+                <el-dropdown-item>
+                  <div>
+                    <el-switch v-model="isShowFlute" active-color="#13ce66" inactive-color="#ff4949">
+                    </el-switch>
+                    <span class="setupTit">隐藏笛子</span>
+                  </div>
+                </el-dropdown-item>
+                <el-dropdown-item>
+                  <div>
+                    <el-switch v-model="isShowNumber" active-color="#13ce66" inactive-color="#ff4949">
+                    </el-switch>
+                    <span class="setupTit">显示数字</span>
+                  </div>
+                </el-dropdown-item>
+                <el-dropdown-item>
+                  <div>
+                    <el-switch v-model="isShowLetter" active-color="#13ce66" inactive-color="#ff4949">
+                    </el-switch>
+                    <span class="setupTit">显示字母</span>
+                  </div>
+                </el-dropdown-item>
+                <el-dropdown-item>
+                  <div>
+                    <el-switch v-model="isAutoSave" @change="isAutoSaveChange" active-color="#13ce66" inactive-color="#ff4949">
+                    </el-switch>
+                    <span class="setupTit">自动保存</span>
+                  </div>
+                </el-dropdown-item>
 
-              <el-dropdown-item @click="clearAll">
-                <el-icon size="16" color="#F56C6C"><DeleteFilled /></el-icon>
-                清空全部
-              </el-dropdown-item>
+                <el-dropdown-item @click="clearAll">
+                  <el-icon size="16" color="#F56C6C"><DeleteFilled /></el-icon>
+                  清空全部
+                </el-dropdown-item>
 
-              <el-dropdown-item @click="coffeeOpen">
-                <el-icon size="16" color="#409EFF"><CoffeeCup /></el-icon>
-                请作者喝杯咖啡
-              </el-dropdown-item>
+                <el-dropdown-item @click="coffeeOpen">
+                  <el-icon size="16" color="#409EFF"><CoffeeCup /></el-icon>
+                  请作者喝杯咖啡
+                </el-dropdown-item>
 
-            </el-dropdown-menu>
-          </template>
-        </el-dropdown>
+              </el-dropdown-menu>
+            </template>
+          </el-dropdown>
+        </div>
+
+
+
       </div>
+    </el-affix>
 
-
-
+    <div class="fluteList-box" id="fluteListBox">
+      <Flute v-for="(item,index) in fluteList"
+             :currentMode="currentMode.value"
+             :isShow="!item.space"
+             :index="index"
+             :key="index"
+             :flag="item.flag"
+             :value="item"
+             :isShowFlute="isShowFlute"
+             :isShowNumber="isShowNumber"
+             :isShowLetter="isShowLetter"
+             @deleteItem="deleteItem"
+             @addItem="addItem"
+             @change="scaleChange"
+      />
+      <div class="btn-list" data-html2canvas-ignore="true">
+        <el-row>
+          <el-button type="primary" style="margin-bottom: 10px;" @click="add('scale')">添加音阶</el-button>
+        </el-row>
+        <el-row>
+          <el-button  @click="add('space')" style="margin-bottom: 10px;">添加留白</el-button>
+        </el-row>
+        <el-row>
+          <el-button  @click="save"  style="width: 98px;">保  存</el-button>
+        </el-row>
+      </div>
+      <Coffee  ref="coffeeRef"></Coffee>
     </div>
-  </el-affix>
 
-  <div class="fluteList-box" id="fluteListBox">
-    <Flute v-for="(item,index) in fluteList"
-           :currentMode="currentMode.value"
-           :isShow="!item.space"
-           :index="index"
-           :key="index"
-           :flag="item.flag"
-           :value="item"
-           :isShowFlute="isShowFlute"
-           :isShowNumber="isShowNumber"
-           :isShowLetter="isShowLetter"
-           @deleteItem="deleteItem"
-           @addItem="addItem"
-           @change="scaleChange"
-    />
-    <div class="btn-list" data-html2canvas-ignore="true">
-      <el-row>
-        <el-button type="primary" style="margin-bottom: 10px;" @click="add('scale')">添加音阶</el-button>
-      </el-row>
-      <el-row>
-        <el-button  @click="add('space')" style="margin-bottom: 10px;">添加留白</el-button>
-      </el-row>
-      <el-row>
-        <el-button  @click="save"  style="width: 98px;">保  存</el-button>
-      </el-row>
-    </div>
-    <Coffee  ref="coffeeRef"></Coffee>
   </div>
 
 </template>
@@ -259,7 +262,7 @@ export default defineComponent({
           save()
         },30000)
     }
-   const add =(type :string,value?:number)=>{
+   const add =(type :string,value = 1)=>{
      let obj :any ={
        value:value,
        vocalPart:1

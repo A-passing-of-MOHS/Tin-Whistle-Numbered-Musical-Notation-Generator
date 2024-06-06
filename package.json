@@ -22,6 +22,7 @@
     "electron-store": "^9.0.0",
     "element-plus": "^2.7.3",
     "html2canvas": "^1.4.1",
+    "terser": "^5.31.1",
     "vue": "^3.4.21",
     "vue-router": "^4.3.2"
   },
