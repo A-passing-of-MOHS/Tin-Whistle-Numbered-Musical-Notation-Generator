@@ -1,9 +1,14 @@
-# Vue 3 + TypeScript + Vite
+### 使用说明
+可以点击屏幕中的添加音节或者按键盘1 2 3 4 5 6 7可输入对应的指法，按空格键添加间隔
+![输入图片说明](public/image.png)
 
-This template should help get you started developing with Vue 3 and TypeScript in Vite. The template uses Vue 3 `<script setup>` SFCs, check out the [script setup docs](https://v3.vuejs.org/api/sfc-script-setup.html#sfc-script-setup) to learn more.
+按住ctrl滑动鼠标滚轮可以缩放页面，右上角设置中可以开启自动保存功能，每30s自动保存一次
 
-## Recommended Setup
+点击已经添加的笛子可以选择删除或者在笛子右侧添加留白或者音节指法
+![输入图片说明](public/image2.png)
 
-- [VS Code](https://code.visualstudio.com/) + [Vue - Official](https://marketplace.visualstudio.com/items?itemName=Vue.volar) (previously Volar) and disable Vetur
+自定义模式输入要自己单独点击笛子进行编辑支持半孔录入
+![输入图片说明](public/image3.png)
 
-- Use [vue-tsc](https://github.com/vuejs/language-tools/tree/master/packages/tsc) for performing the same type checking from the command line, or for generating d.ts files for SFCs.
+
+![输入图片说明](public/image4.png)
