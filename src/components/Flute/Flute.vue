@@ -200,7 +200,9 @@ export default defineComponent({
         FingeringList = DrumOption.FingeringList_D
       }else if(mode == 1){
         FingeringList = DrumOption.FingeringList_G
-      }else {
+      }else if(mode == 2){
+        FingeringList = DrumOption.FingeringList_E
+      } else {
         FingeringList=[]
       }
 
@@ -292,7 +294,19 @@ export default defineComponent({
           if( props.currentMode==0){
             fluteData.value  = [0, 1, 1, 1, 1, 1]
           }
+          //E调1的高音指法不太一样
+          if( props.currentMode==2){
+            fluteData.value  = [0, 1, 1, 1, 1, 0]
+          }
 
+
+
+        }
+        if(selectScale.value.value == 2){
+          fluteData.value  = [0, 1, 1, 1, 1, 1]
+        }
+        if(selectScale.value.value == 3){
+          fluteData.value  = [1, 1, 0, 1, 1, 0]
         }
 
         if(selectScale.value.value == 4){
@@ -428,7 +442,6 @@ export default defineComponent({
   align-items: center;
   flex-direction: column;
   margin-bottom: 15px;
-
   .popoverBtn {
 
     display: flex;

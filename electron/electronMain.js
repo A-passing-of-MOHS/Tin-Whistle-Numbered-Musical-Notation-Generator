@@ -35,7 +35,10 @@ const createWindow = async () => {
         shell.openExternal(value)
     })
 
-
+    ipcMain.handle('all-cache', (event, key) => {
+        console.log(store.store)
+        return  store.store
+    });
 
     ipcMain.on('set-cache', (event, key, value) => {
         store.set(key, value);

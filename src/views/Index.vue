@@ -1,6 +1,6 @@
 <template>
   <div>
-    <el-affix :offset="0">
+    <el-affix :offset="0" style="height: 40px">
       <div class="top-bar">
         <div class="modeBox">
           <el-dropdown trigger="click" >
@@ -28,6 +28,10 @@
               </el-dropdown-menu>
             </template>
           </el-dropdown>
+        </div>
+        <div style="margin-left: 32px;display: flex;align-items: center">
+          <archive @changeArchive="changeArchive" @save="save"></archive><el-input style="display: block; width: 200px;"  v-model="archiveName" @blur="save"></el-input>
+
         </div>
 
         <div class="setupIcon">
@@ -92,20 +96,38 @@
     </el-affix>
 
     <div class="fluteList-box" id="fluteListBox">
-      <Flute v-for="(item,index) in fluteList"
-             :currentMode="currentMode.value"
-             :isShow="!item.space"
-             :index="index"
-             :key="index"
-             :flag="item.flag"
-             :value="item"
-             :isShowFlute="isShowFlute"
-             :isShowNumber="isShowNumber"
-             :isShowLetter="isShowLetter"
-             @deleteItem="deleteItem"
-             @addItem="addItem"
-             @change="scaleChange"
-      />
+      <div style="position: relative" v-for="(item,index) in fluteList">
+
+        <div style="height: 14px;">
+          <div  data-html2canvas-ignore="true" style="position:absolute;top: 0; height: 14px;cursor: pointer;width: 100%; background: #79bbff;border:1px solid #1a1a1a"  @click="changeLine(item)"></div>
+          <div class="line" v-if="item.line==1" :class="getLineClass(item,index,1)" ></div>
+
+          <div  v-if="item.line==2">
+            <div class="line" :class="getLineClass(item,index,1)"></div>
+            <div class="line2" :class="getLineClass(item,index,2)" ></div>
+
+          </div>
+        </div>
+        <Flute
+               v-if="!item.space"
+               :currentMode="currentMode.value"
+               :index="index"
+               :key="index"
+               :flag="item.flag"
+               :value="item"
+               :isShowFlute="isShowFlute"
+               :isShowNumber="isShowNumber"
+               :isShowLetter="isShowLetter"
+               @deleteItem="deleteItem"
+               @addItem="addItem"
+               @change="scaleChange"
+        />
+        <div v-else class="space" @click="deleteItem(index)" >
+          <div></div>
+        </div>
+      </div>
+
+
       <div class="btn-list" data-html2canvas-ignore="true">
         <el-row>
           <el-button type="primary" style="margin-bottom: 10px;" @click="add('scale')">添加音阶</el-button>
@@ -124,21 +146,16 @@
 
 </template>
 
-<script  lang="ts">
+<script setup  lang="ts">
 import {ElMessage, ElMessageBox} from 'element-plus'
 import {defineComponent, onMounted,onBeforeUnmount, ref} from "vue";
 import Flute from "../components/Flute/Flute.vue";
-import {getCache, setCache} from "./cache.ts";
+import {addArchive, getAllArchive, getAllCache, getCache, setCache} from "./cache.ts";
 import Coffee from "../components/Coffee.vue";
 import html2canvas from 'html2canvas'
 import {ModeList} from "./constant.ts";
-export default defineComponent({
- name: "index",
-  components: {
-    Flute,
-    Coffee
-  },
-  setup(context) {
+import Archive from "./Archive.vue";
+
    onMounted(()=>{
      window.addEventListener('keydown',handleKeyDown);
    })
@@ -222,39 +239,41 @@ export default defineComponent({
     })
 
 
-
+    const archiveName=ref('')
     const initConfig = async () => {
-     let mode = await getCache("currentMode")
-      if( mode){
-        currentMode.value=JSON.parse(mode)
-      }else {
-        currentMode.value= {label:'筒音1模式',value:0,tooltip:''}
+      // console.log("getAllCache", getAllCache())
+      let mode = await getCache("currentMode")
+      if (mode) {
+        currentMode.value = JSON.parse(mode)
+      } else {
+        currentMode.value = {label: '筒音1模式', value: 0, tooltip: ''}
       }
-      let index_musicNameStr = await getCache("index_musicName")
-       isAutoSave.value = await getCache("isAutoSave")
-      if( isAutoSave.value ){
+
+      //获取默认存档
+      let currentArchive = await getCache("currentArchive")
+      if (currentArchive) {
+        let archiveData = JSON.parse(await getCache(currentArchive))
+        fluteList.value = archiveData.data
+        archiveName.value = archiveData.name
+      } else {
+        let fileName = "未命名"
+        await addArchive(fileName)
+        setCache("currentArchive", "Archive_0")
+        fluteList.value = []
+        archiveName.value = "未命名"
+
+
+      }
+
+
+      isAutoSave.value = await getCache("isAutoSave")
+      if (isAutoSave.value) {
         openAutoSave()
       }
 
-      console.log(index_musicNameStr)
-      if (index_musicNameStr) {
-        fluteList.value = JSON.parse(index_musicNameStr)
-      } else {
-        fluteList.value = [
-          {
-            value: 1,
-            vocalPart: 1
-          },
-          {
-            value: 1,
-            vocalPart: 1
-          },
-          {
-            value: 1,
-            vocalPart: 1
-          },]
-      }
     }
+
+
 
     let intervalId
     const openAutoSave = ()=> {
@@ -300,11 +319,16 @@ export default defineComponent({
     }
 
     const save =()=>{
-      let musicName ="index_musicName"
+    let currentArchiveKey = getCache("currentArchive")
 
-      setCache(musicName,JSON.stringify(fluteList.value))
+      let Archive ={
+        name:archiveName.value,
+        data:fluteList.value}
+
+      setCache(currentArchiveKey,JSON.stringify(Archive))
 
       ElMessage.success({
+        grouping: true,
         message: '保存成功',
         type: 'success'
       });
@@ -349,6 +373,42 @@ export default defineComponent({
         });
       }
       }
+
+
+    const getLineClass = (item,index,line=1)=> {
+     if(line==1){
+       if(item.line===1){
+         if(fluteList.value[index+1].line>=fluteList.value[index].line){
+           return "line-long"
+         }
+
+       } else if(item.line===2){
+         if(fluteList.value[index+1].line>=1){
+           return "line-long"
+         }
+
+       }
+     }else {
+       if(fluteList.value[index+1].line==2){
+         return "line2-long"
+       }
+     }
+
+
+
+    }
+
+
+    const changeLine = (item) => {
+        let line = item.line
+        if(!line){
+          item.line = 1
+        }else if(line==1){
+          item.line = 2
+        }else {
+          item.line = 0
+        }
+      }
       const currentMode = ref({label: '筒音1模式', value: 0, tooltip: ''});
       const changeMode = async (mode) => {
         let str = `确定要切换为${mode.label}吗？`
@@ -374,41 +434,78 @@ export default defineComponent({
 
 
       };
-      return {
-        currentMode,
-        changeMode,
-        value,
-        fluteList,
-        isShowFlute,
-        isShowNumber,
-        isShowLetter,
-        isAutoSave,
-        ModeList,
-        coffeeOpen,
-        clearAll,
-        coffeeRef,
-        toCanvas,
-        isAutoSaveChange,
-        add,
-        deleteItem,
-        addItem,
-        scaleChange,
-        save
 
-      }
-    }
-})
-
+const changeArchive = (archive) => {
+   archiveName.value= archive.name
+  fluteList.value = archive.data
+}
 
 
 
 </script>
 
 <style  lang="less" scoped >
-.top-bar{
-  height: 40px;
-  width: 100%;
+.line{
+  position: absolute;
+  top:122px;
+  margin-left: 20px;
+  width: 40px;
+  height: 2px;
+  background: #666;
+  margin-bottom: 10px;
+}
+.line-long{
+  position: absolute;
+  top:122px;
+  width: 80px;
+  height: 2px;
+  background: #666;
+  margin-bottom: 10px;
+}
+.line2{
+  position: absolute;
+  top:130px;
+  margin-left: 20px;
+  width: 40px;
+  height: 2px;
+  background: #666;
+  margin-bottom: 10px;
+}
+.line2-long{
+  position: absolute;
+  top:130px;
+  margin-left: 20px;
+  width: 80px;
+  height: 2px;
+  background: #666;
+  margin-bottom: 10px;
+}
+
+
+
+
+.space{
   display: flex;
+ justify-content: center;
+  width: 80px;
+  height: 100%;
+  div{
+    width: 2px;
+    height: 68px;
+    background: #666;
+    margin-top: 20px;
+  }
+}
+.top-bar{
+  margin-left: -2rem;
+  padding:0 2rem ;
+  box-sizing: border-box;
+  background: #ffffff;
+  box-shadow: 2px 2px 21px #ccc;
+  height: 40px;
+  width: 100vw;
+  display: flex;
+  align-items: center;
   .setupIcon{
     margin-left: auto;
 
@@ -421,6 +518,7 @@ export default defineComponent({
   margin-left: 5px;
 }
 .fluteList-box{
+  margin-top: 40px;
   padding: 20px;
 
   display: flex;

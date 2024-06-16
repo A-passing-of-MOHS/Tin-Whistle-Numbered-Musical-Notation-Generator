@@ -5,4 +5,5 @@ contextBridge.exposeInMainWorld('electronAPI', {
     openUrl: (url) => ipcRenderer.send('open-url', url),
     setCache: (key,val) => ipcRenderer.send('set-cache', key,val),
     getCache: (key) => ipcRenderer.invoke('get-cache', key),
+    getAllCache: () => ipcRenderer.invoke('all-cache'),
 })
