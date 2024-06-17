@@ -330,7 +330,7 @@ import Archive from "./Archive.vue";
      fluteList.value=[...fluteList.value]
    }
 
-   const deleteItem=(index=fluteList.value.length)=>{
+   const deleteItem=(index=fluteList.value.length-1)=>{
      fluteList.value.splice(index,1)
     }
     const addItem=(index,type)=>{
@@ -410,18 +410,27 @@ import Archive from "./Archive.vue";
     const getLineClass = (item,index,line=1)=> {
      if(line==1){
        if(item.line===1){
+         if(!fluteList.value[index+1]){
+           return "line-long"
+         }
          if(fluteList.value[index+1].line>=fluteList.value[index].line){
            return "line-long"
          }
 
        } else if(item.line===2){
+         if(!fluteList.value[index+1]){
+           return "line-long"
+         }
          if(fluteList.value[index+1].line>=1){
            return "line-long"
          }
 
        }
      }else {
-       if(fluteList.value[index+1].line==2){
+       if(!fluteList.value[index+1]){
+         return "line2-long"
+       }
+       if(fluteList.value[index+1]?.line==2){
          return "line2-long"
        }
      }
