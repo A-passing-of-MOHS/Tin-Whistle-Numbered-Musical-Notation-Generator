@@ -109,7 +109,7 @@
           </div>
         </div>
         <Flute
-               v-if="!item.space"
+               v-if="item.scale"
                :currentMode="currentMode.value"
                :index="index"
                :key="index"
@@ -122,8 +122,11 @@
                @addItem="addItem"
                @change="scaleChange"
         />
-        <div v-else class="space" @click="deleteItem(index)" >
+        <div v-if="item.Backslash" class="space" @click="deleteItem(index)" >
           <div></div>
+        </div>
+        <div v-if="item.space" class="space" @click="deleteItem(index)" >
+
         </div>
 
 
@@ -217,8 +220,16 @@ import Archive from "./Archive.vue";
       coffeeRef.value.open()
     }
     const handleKeyDown = (event) => {
+      console.log(event)
      if(!isInEdit.value){
        return
+     }
+      if(event.code === 'Backspace'){
+        deleteItem()
+      }
+
+     if(event.code === 'Backslash'){
+       add('Backslash')
      }
       // if (event.code === 'Enter') {
       //   // 处理回车键按下事件
@@ -305,7 +316,9 @@ import Archive from "./Archive.vue";
        vocalPart:1
      }
      if(type=="scale"){
-
+       obj.scale=true
+     }else if(type=="Backslash"){
+       obj.Backslash=true
      }else {
        obj.space=true
      }
@@ -313,7 +326,7 @@ import Archive from "./Archive.vue";
      fluteList.value=[...fluteList.value]
    }
 
-   const deleteItem=(index)=>{
+   const deleteItem=(index=fluteList.value.length)=>{
      fluteList.value.splice(index,1)
     }
     const addItem=(index,type)=>{
