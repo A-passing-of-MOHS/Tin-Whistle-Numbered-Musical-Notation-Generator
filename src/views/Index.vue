@@ -343,6 +343,11 @@ import Archive from "./Archive.vue";
         obj.space=true
         index++
       }
+
+      if(type=="scale"){
+        obj.scale=true
+      }
+
       fluteList.value.splice(index,0,obj)
       fluteList.value=[...fluteList.value]
 

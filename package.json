@@ -4,7 +4,7 @@
   "author": "LeaveEarly",
   "description": "tin-whistle-numbered-musical-notation-generator",
   "private": true,
-  "version": "1.3.2",
+  "version": "1.3.3",
   "type": "module",
   "scripts": {
     "dev": "vite",
