@@ -482,6 +482,7 @@ export default defineComponent({
     }
 
     .scaleLabel {
+      color: #1a1a1a;
       font-size: 32px;
       line-height: 32px;
       margin-bottom: 2px;

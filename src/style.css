@@ -23,6 +23,7 @@ a:hover {
 }
 
 body {
+  background: #ffffff;
   margin: 0;
   display: flex;
   place-items: center;
@@ -64,6 +65,7 @@ button:focus-visible {
   margin: 0 auto;
   padding:0 2rem;
   text-align: center;
+  box-sizing: border-box;
 }
 
 @media (prefers-color-scheme: light) {

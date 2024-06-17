@@ -40,7 +40,7 @@ export const getAllArchive= async () => {
     return archiveList
 }
 
-export const addArchive=async (name) => {
+export const addArchive=async (name:string) => {
     let allCache = await getAllCache()
     let archiveList = allCache.filter(item => item.key.startsWith('Archive_'))
     let key ="Archive_"+ archiveList.length

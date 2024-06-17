@@ -30,7 +30,7 @@
           </el-dropdown>
         </div>
         <div style="margin-left: 32px;display: flex;align-items: center">
-          <archive @changeArchive="changeArchive" @save="save"></archive><el-input style="display: block; width: 200px;"  v-model="archiveName" @blur="save"></el-input>
+          <archive @changeArchive="changeArchive"></archive><el-input style="display: block; width: 200px;"  v-model="archiveName" @blur="save"></el-input>
 
         </div>
 
@@ -95,7 +95,7 @@
       </div>
     </el-affix>
 
-    <div class="fluteList-box" id="fluteListBox">
+    <div class="fluteList-box" id="fluteListBox" @click="mouseover" outline="0" tabindex="0"   @blur="mouseout">
       <div style="position: relative" v-for="(item,index) in fluteList">
 
         <div style="height: 14px;">
@@ -125,7 +125,10 @@
         <div v-else class="space" @click="deleteItem(index)" >
           <div></div>
         </div>
+
+
       </div>
+      <div v-if="isInEdit" style="padding:24px;display: flex;align-items: center"><div class="pointer"></div></div>
 
 
       <div class="btn-list" data-html2canvas-ignore="true">
@@ -161,8 +164,20 @@ import Archive from "./Archive.vue";
    })
     onBeforeUnmount(()=>{
           window.removeEventListener('keydown',handleKeyDown);
-        }
-    )
+    })
+
+   const isInEdit =ref(true)
+   const pointerIndex =ref(0)
+   const mouseover=()=>{
+     isInEdit.value=true
+
+   }
+  const mouseout=()=>{
+    console.log("mouseout")
+    isInEdit.value=false
+
+  }
+
     const toCanvas =async () => {
        let fileName = await new Promise((resolve, reject) => {
         ElMessageBox.prompt('请输入保存的名称', '导出', {
@@ -202,6 +217,9 @@ import Archive from "./Archive.vue";
       coffeeRef.value.open()
     }
     const handleKeyDown = (event) => {
+     if(!isInEdit.value){
+       return
+     }
       // if (event.code === 'Enter') {
       //   // 处理回车键按下事件
       //   add('scale')
@@ -318,15 +336,14 @@ import Archive from "./Archive.vue";
       fluteList.value=[...fluteList.value]
     }
 
-    const save =()=>{
-    let currentArchiveKey = getCache("currentArchive")
+    const save =async () => {
+      let currentArchiveKey = await getCache("currentArchive")
+      let Archive = {
+        name: archiveName.value,
+        data: fluteList.value
+      }
 
-      let Archive ={
-        name:archiveName.value,
-        data:fluteList.value}
-
-      setCache(currentArchiveKey,JSON.stringify(Archive))
-
+      await setCache(currentArchiveKey, JSON.stringify(Archive))
       ElMessage.success({
         grouping: true,
         message: '保存成功',
@@ -340,13 +357,11 @@ import Archive from "./Archive.vue";
 
     const value = ref(0)
 
-// 在渲染进程的脚本中
 
 
 
 
-
-    const isAutoSave=ref()
+    const isAutoSave=ref(true)
     const isAutoSaveChange = () => {
         if(isAutoSave.value){
           openAutoSave()
@@ -435,8 +450,12 @@ import Archive from "./Archive.vue";
 
       };
 
-const changeArchive = (archive) => {
-   archiveName.value= archive.name
+const changeArchive = async (archive, key) => {
+  //先保存当前
+  await save()
+
+  setCache("currentArchive", key)
+  archiveName.value = archive.name
   fluteList.value = archive.data
 }
 
@@ -445,6 +464,20 @@ const changeArchive = (archive) => {
 </script>
 
 <style  lang="less" scoped >
+.pointer{
+  height: 258px;
+  width: 2px;
+  background: #1a1a1a;
+  animation: blink 1.5s infinite;
+}
+@keyframes blink{
+  from{
+    opacity: 1;
+  }
+  to{
+    opacity: 0;
+  }
+}
 .line{
   position: absolute;
   top:122px;
@@ -502,7 +535,7 @@ const changeArchive = (archive) => {
   box-sizing: border-box;
   background: #ffffff;
   box-shadow: 2px 2px 21px #ccc;
-  height: 40px;
+  height: 58px;
   width: 100vw;
   display: flex;
   align-items: center;
