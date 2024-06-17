@@ -95,7 +95,11 @@
       </div>
     </el-affix>
 
+
     <div class="fluteList-box" id="fluteListBox" @click="mouseover" outline="0" tabindex="0"   @blur="mouseout">
+      <div style="width: 100%;margin-bottom: 20px">
+        <h1>{{archiveName}}</h1>
+      </div>
       <div style="position: relative" v-for="(item,index) in fluteList">
 
         <div style="height: 14px;">
